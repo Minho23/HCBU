@@ -1,0 +1,151 @@
+unit LOGIN_U;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf,
+  FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async,
+  FireDAC.Phys, FireDAC.VCLUI.Wait, Data.DB, FireDAC.Comp.Client, rImprovedComps,
+  FireDAC.Phys.DB2, FireDAC.Phys.DB2Def,rDlg, Vcl.Mask,System.dateUtils;
+
+  function f_timestamp(Data, ora: TDateTimePicker): string;
+
+type
+  TLOGIN_F = class(TForm)
+    euser: TLabeledEdit;
+    epassword: TLabeledEdit;
+    btnlogin: TBitBtn;
+    btncancel: TBitBtn;
+    Label1: TLabel;
+    emg: TLabeledEdit;
+    cn_test: TFDConnection;
+    procedure btnloginClick(Sender: TObject);
+    procedure btncancelClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure epasswordKeyPress(Sender: TObject; var Key: Char);
+    procedure euserChange(Sender: TObject);
+
+
+  private
+    { Private declarations }
+  public
+
+    { Public declarations }
+  end;
+
+var
+  LOGIN_F: TLOGIN_F;
+  TXT:TextFile;
+  s:string;
+  LOGIN_PERFORMED:bool;
+  const
+   nn='fdConnectionDefs.INI';
+
+implementation
+  Uses Main,SPLASH_U;
+
+{$R *.dfm}
+
+function f_timestamp(Data, ora: TDateTimePicker): string;
+begin
+  Result := '';
+  ora.Time := recodesecond(ora.Time, 0);
+  Result := formatdatetime('yyyy-mm-dd', Data.date) + ' ' +
+    formatdatetime('hh:nn:ss', ora.Time);
+end;
+
+procedure TLOGIN_F.btncancelClick(Sender: TObject);
+begin
+ SPLASH_U.LOGIN_PERFORMED:=false;
+ euser.Text:='';epassword.Text:='';
+ close;
+
+end;
+
+procedure TLOGIN_F.btnloginClick(Sender: TObject);
+begin
+    btnlogin.Enabled:=false;
+    btncancel.Enabled:=false;
+      //try to connect to check us user and passwrod are valid
+      cn_test.Params.UserName:=trim(euser.Text);
+      cn_test.Params.Password:=trim(epassword.Text);
+
+        try
+
+          cn_test.Connected:=true;
+          SPLASH_U.USER:=trim(euser.Text);
+          SPLASH_U.PASSWORD:=trim(epassword.Text);
+          SPLASH_U.LOGIN_PERFORMED:=true;
+
+
+        except
+        on e:Exception do begin
+          SPLASH_U.LOGIN_PERFORMED:=false;
+          DlgE2('Database Login Error','Database has returned '+e.Message+sLineBreak+
+                 ' Program will be closed!' );
+        end;
+
+        end;
+
+
+        cn_test.Connected:=false;
+
+    //principale.ShowModal;
+    close;
+
+end;
+
+
+
+
+
+procedure TLOGIN_F.epasswordKeyPress(Sender: TObject; var Key: Char);
+begin
+  if key=#13 then   btnloginClick(btnlogin);
+
+end;
+
+procedure TLOGIN_F.euserChange(Sender: TObject);
+begin
+ if Length(euser.Text)>0 then
+    btnlogin.Enabled:=true else
+    btnlogin.Enabled:=false;
+end;
+
+procedure TLOGIN_F.FormShow(Sender: TObject);
+var exepath:string;
+begin
+ // emg.Text:=GetRegistryValue('SOFTWARE\Microsoft\Cryptography');
+ EXEPATH:= ExtractFilePath(ParamStr(0));
+ if FileExists(nn) then begin
+   AssignFile(txt,exepath+nn);
+   Reset(txt);
+   while not Eof(txt) do begin
+     Readln(txt,s);
+
+      if pos('user_name',LowerCase(s))>0 then begin
+         if pos('=',s)>0 then begin
+           euser.Text:=trim(copy(s,pos('=',s)+1,999));
+         end;
+      end;
+      if pos('password',LowerCase(s))>0 then begin
+         if pos('=',s)>0 then begin
+           epassword.Text:=trim(copy(s,pos('=',s)+1,999));
+         end;
+
+      end;
+
+
+   end;
+   CloseFile(txt);
+ end;
+
+
+end;
+
+end.
+
+
+

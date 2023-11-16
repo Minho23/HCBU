@@ -1,0 +1,101 @@
+unit LOGIN_U;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf,
+  FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async,
+  FireDAC.Phys, FireDAC.VCLUI.Wait, Data.DB, FireDAC.Comp.Client, rImprovedComps ,System.Win.Registry,
+  FireDAC.Phys.DB2, FireDAC.Phys.DB2Def, FireDAC.Stan.Param, FireDAC.DatS,
+  FireDAC.DApt.Intf, FireDAC.DApt, FireDAC.Comp.DataSet,System.dateUtils,Vcl.ComCtrls,
+  Vcl.Mask;
+
+  function f_timestamp(data,ora:TDateTimePicker):string;
+
+type
+  TLOGIN_F = class(TForm)
+    euser: TLabeledEdit;
+    epassword: TLabeledEdit;
+    btnlogin: TBitBtn;
+    btncancel: TBitBtn;
+    Label1: TLabel;
+    emg: TLabeledEdit;
+    db0: TFDTransaction;
+    cn1: TFDConnection;
+    q_read_aero: TFDQuery;
+    procedure btnloginClick(Sender: TObject);
+    procedure btncancelClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure epasswordKeyPress(Sender: TObject; var Key: Char);
+
+
+  private
+    { Private declarations }
+  public
+
+    { Public declarations }
+  end;
+
+var
+  LOGIN_F: TLOGIN_F;
+
+implementation
+  Uses Main;
+
+{$R *.dfm}
+
+function f_timestamp(data,ora:TDateTimePicker):string;
+begin
+   Result:='';
+   ora.Time:=recodesecond(ora.Time,0);
+   Result:=formatdatetime('yyyy-mm-dd', data.date)
+   +' '+formatdatetime('hh:nn:ss',ora.Time);
+end;
+
+
+procedure TLOGIN_F.btncancelClick(Sender: TObject);
+begin
+ close;free;
+end;
+
+procedure TLOGIN_F.btnloginClick(Sender: TObject);
+begin
+    btnlogin.Enabled:=false;
+    btncancel.Enabled:=false;
+    cn1.Params.UserName:=euser.Text;
+    cn1.Params.Password:=epassword.Text;
+    cn1.Connected:=true;
+      q_read_aero.Open();
+        principale.etopic.Items.Clear;
+        while not q_read_aero.Eof do begin
+          principale.etopic.Items.Add(q_read_aero['MARCHE']);
+          q_read_aero.Next;
+        end;
+
+    principale.ShowModal;
+    //close;
+
+end;
+
+
+
+
+
+procedure TLOGIN_F.epasswordKeyPress(Sender: TObject; var Key: Char);
+begin
+  if key=#13 then   btnloginClick(btnlogin);
+
+end;
+
+procedure TLOGIN_F.FormShow(Sender: TObject);
+begin
+  //emg.Text:=principale.  GetRegistryValue('SOFTWARE\Microsoft\Cryptography');
+  euser.Text:='dbpower';epassword.Text:='Vt314149!db2';
+end;
+
+end.
+
+
+

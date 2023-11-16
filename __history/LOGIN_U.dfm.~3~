@@ -1,0 +1,141 @@
+object LOGIN_F: TLOGIN_F
+  Left = 0
+  Top = 0
+  Caption = 'Hyper Connected Base Unit'
+  ClientHeight = 278
+  ClientWidth = 592
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  Position = poScreenCenter
+  OnShow = FormShow
+  TextHeight = 13
+  object Label1: TLabel
+    Left = 0
+    Top = 265
+    Width = 592
+    Height = 13
+    Align = alBottom
+    Caption = '     Intuos Srl - Italy'
+    Color = 8454143
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlue
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentColor = False
+    ParentFont = False
+    Transparent = False
+    ExplicitTop = 269
+    ExplicitWidth = 93
+  end
+  object euser: TLabeledEdit
+    Left = 129
+    Top = 30
+    Width = 264
+    Height = 24
+    EditLabel.Width = 26
+    EditLabel.Height = 13
+    EditLabel.Caption = 'User:'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 0
+    Text = ''
+  end
+  object epassword: TLabeledEdit
+    Left = 129
+    Top = 86
+    Width = 264
+    Height = 24
+    EditLabel.Width = 50
+    EditLabel.Height = 13
+    EditLabel.Caption = 'Password:'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    PasswordChar = #9632
+    TabOrder = 1
+    Text = ''
+    OnKeyPress = epasswordKeyPress
+  end
+  object btnlogin: TBitBtn
+    Left = 129
+    Top = 134
+    Width = 112
+    Height = 33
+    Caption = '&Login'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 2
+    OnClick = btnloginClick
+  end
+  object btncancel: TBitBtn
+    Left = 273
+    Top = 134
+    Width = 120
+    Height = 33
+    Caption = '&Cancel'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clRed
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ModalResult = 8
+    ParentFont = False
+    TabOrder = 3
+    OnClick = btncancelClick
+  end
+  object emg: TLabeledEdit
+    Left = 296
+    Top = 242
+    Width = 290
+    Height = 21
+    Alignment = taRightJustify
+    EditLabel.Width = 46
+    EditLabel.Height = 13
+    EditLabel.Caption = 'Device ID'
+    TabOrder = 4
+    Text = ''
+  end
+  object db0: TFDTransaction
+    Connection = cn1
+    Left = 24
+    Top = 8
+  end
+  object cn1: TFDConnection
+    Params.Strings = (
+      'OSAuthent=No'
+      'ConnectionDef=ETL')
+    FetchOptions.AssignedValues = [evMode, evRowsetSize]
+    FetchOptions.Mode = fmAll
+    FetchOptions.RowsetSize = 300
+    ResourceOptions.AssignedValues = [rvAutoReconnect]
+    ResourceOptions.AutoReconnect = True
+    LoginPrompt = False
+    Transaction = db0
+    Left = 64
+    Top = 8
+  end
+  object q_read_aero: TFDQuery
+    Connection = cn1
+    SQL.Strings = (
+      'SELECT MARCHE'
+      'FROM ANA.ANAAERO')
+    Left = 32
+    Top = 104
+  end
+end
