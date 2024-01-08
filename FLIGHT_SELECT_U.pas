@@ -79,14 +79,6 @@ begin
   end;
 end;
 
-procedure go_query;
-begin
-  with FLIGHT_SELECT_F do
-  begin
-
-  end;
-end;
-
 procedure TFLIGHT_SELECT_F.bt_replay_or_chartClick(Sender: TObject);
 
 begin

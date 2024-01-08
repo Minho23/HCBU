@@ -18,6 +18,7 @@ uses
   IdTCPClient, IdHTTP, System.JSON;
 
 function GetRegistryValue(KeyName: string): string;
+procedure connect_mqtt;
 
 type
   TPRINCIPALE = class(TForm)
@@ -238,6 +239,7 @@ var // EDIT DANIELE
   first_ele_minor: Integer;
   takeoff_past, landing_past: bool;
   ias_kts_int: Integer;
+  TYPE_OF_CONNECTION: Integer;
 
 const // EDIT DANIELE
 
@@ -251,6 +253,21 @@ implementation
 uses login_u, FLIGHT_SELECT_U, CHART_U, SPLASH_U, BROADCAST_U;
 
 {$R *.dfm}
+
+procedure connect_mqtt;
+var
+  Hour, Min, Sec, MSec: Word;
+begin
+
+  DecodeTime(now, Hour, Min, Sec, MSec);
+  with PRINCIPALE do
+  begin
+    mqc.ClientID := eclient_id + inttostr(Hour) + inttostr(Sec) +
+      inttostr(MSec);
+    mqc.Connect();
+  end;
+
+end;
 
 procedure RESET_ALARM;
 begin
@@ -756,7 +773,7 @@ begin
             gg: string;
           begin
             gg := iResult;
-            /// // principale.r.lines.append('hdg '+gg);
+            // principale.r.lines.append('hdg '+gg);
 
           end);
       end;
@@ -1127,7 +1144,7 @@ begin
     on e: exception do
     begin
       appoint := 0;
-      PRINCIPALE.r.Lines.add('Pitch Error: ' + pitch_s);
+      // PRINCIPALE.r.Lines.add('Pitch Error: ' + pitch_s);
     end;
   end;
   if abs(appoint) > 180 then
@@ -1172,7 +1189,7 @@ begin
     on e: exception do
     begin
       appoint := 0;
-      PRINCIPALE.r.Lines.add('Roll Error: ' + roll_s);
+      // PRINCIPALE.r.Lines.add('Roll Error: ' + roll_s);
     end;
   end;
   if abs(appoint) > 180 then
@@ -1306,9 +1323,6 @@ end;
 procedure gps(m: string);
 
 var
-  slat, slon: single;
-
-  minute: single;
   appo: string;
 begin
   gps_msg := SplitString(m, ',');
@@ -1824,8 +1838,7 @@ begin
 end;
 
 procedure TPRINCIPALE.bt_chartClick(Sender: TObject);
-var
-  i: Integer;
+
 begin
   REP_OR_CHART := 'CHART';
   FLIGHT_SELECT_F.bt_replay_or_chart.Caption := 'C&hart';
@@ -1954,13 +1967,9 @@ begin
 end;
 
 procedure TPRINCIPALE.bt_connectClick(Sender: TObject);
-var
-  Hour, Min, Sec, MSec: Word;
 begin
 
   RESET_ALARM;
-
-  DecodeTime(now, Hour, Min, Sec, MSec);
   REP_OR_CHART := 'CONNECT';
   // SG.Cells[0, 14] := '';
   datetime_gps := now;
@@ -1968,9 +1977,8 @@ begin
   if etopic.ItemIndex >= 0 then
   begin
     AZZERA_SG;
-    mqc.ClientID := eclient_id + inttostr(Hour) + inttostr(Sec) +
-      inttostr(MSec);
-    mqc.Connect();
+    TYPE_OF_CONNECTION := 1;
+    connect_mqtt;
     g_max := 0;
     g_min := 0;
     h_x_baro_s := '0';
@@ -2047,14 +2055,10 @@ begin
 end;
 
 procedure TPRINCIPALE.bt_update_connClick(Sender: TObject);
-var
-  Hour, Min, Sec, MSec: Word;
 
 begin
   mqc.Disconnect;
-  DecodeTime(now, Hour, Min, Sec, MSec);
-  mqc.ClientID := eclient_id + inttostr(Hour) + inttostr(Sec) + inttostr(MSec);
-  mqc.Connect();
+  connect_mqtt;
 end;
 
 procedure TPRINCIPALE.FormCreate(Sender: TObject);
@@ -2087,6 +2091,8 @@ begin
 
   pb2.Align := alTop;
   pb2.Visible := false;
+
+  TYPE_OF_CONNECTION := 0;
 
 end;
 
@@ -2201,14 +2207,38 @@ end;
 
 procedure TPRINCIPALE.mqcConnectedStatusChanged(ASender: TObject;
 const AConnected: Boolean; AStatus: TTMSMQTTConnectionStatus);
+var
+  i: Integer;
 begin
   if AConnected then
   begin
 
-    mqc.Subscribe(etopic.Text + '/#');
-    panelcolor0 := clGreen;
-    sb1.Panels[0].Text := 'Online';
+    if TYPE_OF_CONNECTION = 1 then
+    begin
 
+      ShowMessage('connessione tipo 1');
+      mqc.Subscribe(etopic.Text + '/#');
+      panelcolor0 := clGreen;
+      sb1.Panels[0].Text := 'Online';
+
+    end
+    else if TYPE_OF_CONNECTION = 2 then
+    begin
+      ShowMessage('connessione tipo 2');
+      with BROADCAST_F do
+      begin
+
+        for i := 0 to clb_aircraft.Items.Count - 1 do
+        begin
+          mqc.Subscribe(clb_aircraft.Items[i] + '/#');
+
+        end;
+
+        check_mqtt;
+
+      end;
+
+    end;
   end
   else
   begin
@@ -2245,9 +2275,13 @@ var
 
 begin
   msg := TEncoding.UTF8.GetString(APayload);
-  Decode(ATopic, msg);
+  if TYPE_OF_CONNECTION = 1 then
 
-  /// //////////////////////////////
+    Decode(ATopic, msg)
+  else if TYPE_OF_CONNECTION = 2 then
+    // funzione in bropadcast_f
+    BROADCAST_U.decode_mqtt_msg(ATopic, msg);
+
 end;
 
 procedure TPRINCIPALE.sb1DrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel;

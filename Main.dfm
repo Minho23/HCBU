@@ -304,6 +304,8 @@ object PRINCIPALE: TPRINCIPALE
         Width = 200
       end>
     OnDrawPanel = sb1DrawPanel
+    ExplicitTop = 690
+    ExplicitWidth = 1157
   end
   object r: TrMemoEx
     AlignWithMargins = True
@@ -447,8 +449,8 @@ object PRINCIPALE: TPRINCIPALE
     end
   end
   object rg_vcr: TrGroupBox
-    Left = 778
-    Top = 366
+    Left = 730
+    Top = 327
     Width = 289
     Height = 174
     Caption = 'FlightReplay Controls'
@@ -1138,17 +1140,19 @@ object PRINCIPALE: TPRINCIPALE
   object mqc: TTMSMQTTClient
     BrokerHostName = 'mqtt.intuos.it'
     BrokerPort = 8081
+    KeepAliveSettings.AutoReconnect = True
+    KeepAliveSettings.AutoReconnectInterval = 10
     Credentials.Username = 'onetoone'
     Credentials.Password = 'vt3141'
     Version = '2.0.5.3'
     OnConnectedStatusChanged = mqcConnectedStatusChanged
     OnPublishReceivedEx = mqcPublishReceivedEx
-    Left = 104
-    Top = 456
+    Left = 88
+    Top = 432
   end
   object MainMenu1: TMainMenu
-    Left = 794
-    Top = 627
+    Left = 786
+    Top = 563
     object ListALarmEvent1: TMenuItem
       Caption = '&Manage aircraft'
     end
@@ -1178,8 +1182,8 @@ object PRINCIPALE: TPRINCIPALE
       'SELECT *'
       'FROM BASE.BOX_ALARM'
       'WHERE MARCHE=:MARCHE')
-    Left = 880
-    Top = 624
+    Left = 840
+    Top = 568
     ParamData = <
       item
         Name = 'MARCHE'
@@ -1228,7 +1232,7 @@ object PRINCIPALE: TPRINCIPALE
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 168
-    Top = 448
+    Left = 128
+    Top = 432
   end
 end
