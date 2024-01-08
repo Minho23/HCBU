@@ -1,0 +1,70 @@
+unit BROADCAST_U;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.CheckLst,
+  Vcl.ControlList, Vcl.Buttons, Vcl.ComCtrls, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
+  Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.ExtCtrls, Vcl.Grids;
+
+type
+  TBROADCAST_F = class(TForm)
+    gb_message: TGroupBox;
+    gb_aero: TGroupBox;
+    gb_ack: TGroupBox;
+    clb_aircraft: TCheckListBox;
+    e_message: TEdit;
+    bb_send_message: TBitBtn;
+    q_read_aero: TFDQuery;
+    list_ack: TListView;
+    procedure FormShow(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  BROADCAST_F: TBROADCAST_F;
+
+implementation
+
+uses Main;
+
+{$R *.dfm}
+
+procedure AggiungiElemento(const MarcaAereo: string);
+var
+  NuovoElemento: TListItem;
+begin
+  with BROADCAST_F do
+  begin
+
+    NuovoElemento := list_ack.Items.Add;
+    NuovoElemento.Caption := MarcaAereo;
+    // Puoi aggiungere ulteriori sottocolonne se necessario:
+    // NuovoElemento.SubItems.Add('AltroDato');
+  end;
+
+end;
+
+procedure TBROADCAST_F.FormShow(Sender: TObject);
+begin
+
+  q_read_aero.open();
+  clb_aircraft.Items.Clear();
+  list_ack.Items.Clear();
+  while not q_read_aero.Eof do
+  begin
+    clb_aircraft.Items.Add(q_read_aero['MARCHE']);
+    AggiungiElemento(q_read_aero['MARCHE'].asString());
+    q_read_aero.Next;
+  end;
+  q_read_aero.close();
+end;
+
+end.

@@ -14,10 +14,11 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
   OnShow = FormShow
   TextHeight = 13
   object rGroupBox1: TrGroupBox
-    Left = 0
-    Top = 0
-    Width = 1174
-    Height = 692
+    AlignWithMargins = True
+    Left = 3
+    Top = 3
+    Width = 1168
+    Height = 271
     Align = alClient
     Caption = 'Flight Selection Parameters'
     TabOrder = 0
@@ -32,6 +33,8 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
     CaptionParentFont = False
     GradientColorFrom = 15987699
     GradientColorTo = 15987699
+    ExplicitWidth = 1166
+    ExplicitHeight = 267
     object rg_flight_type: TRadioGroup
       AlignWithMargins = True
       Left = 33
@@ -68,8 +71,14 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
         Height = 13
         AutoSize = False
         Caption = 'Low Limit'
-        Color = 8454143
+        Color = clSkyBlue
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
         ParentColor = False
+        ParentFont = False
         Transparent = False
       end
       object Label1: TLabel
@@ -79,8 +88,14 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
         Height = 13
         AutoSize = False
         Caption = 'High Limit'
-        Color = 8454143
+        Color = clSkyBlue
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
         ParentColor = False
+        ParentFont = False
         Transparent = False
       end
       object edata1: TDateTimePicker
@@ -148,12 +163,12 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
         ParentFont = False
         TabOrder = 3
       end
-      object BitBtn1: TBitBtn
+      object bt_replay_or_chart: TBitBtn
         Left = 16
         Top = 168
         Width = 177
         Height = 33
-        Caption = '&Select Query'
+        Caption = '&Replay'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGreen
         Font.Height = -16
@@ -161,7 +176,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
         Font.Style = []
         ParentFont = False
         TabOrder = 4
-        OnClick = BitBtn1Click
+        OnClick = bt_replay_or_chartClick
       end
     end
     object rgb_etl: TrGroupBox
@@ -277,247 +292,248 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
           end>
       end
     end
-    object rgb_fl: TrGroupBox
-      Left = 2
-      Top = 314
-      Width = 1169
+  end
+  object rgb_fl: TrGroupBox
+    AlignWithMargins = True
+    Left = 3
+    Top = 280
+    Width = 1168
+    Height = 409
+    Align = alBottom
+    Caption = 'Flight List  '
+    TabOrder = 1
+    CaptionHeight = 22
+    CaptionFontColor = clYellow
+    CaptionFont.Charset = DEFAULT_CHARSET
+    CaptionFont.Color = clWindowText
+    CaptionFont.Height = -16
+    CaptionFont.Name = 'Tahoma'
+    CaptionFont.Style = [fsBold]
+    CaptionParentFont = False
+    GradientColorFrom = 15987699
+    GradientColorTo = 15987699
+    ExplicitTop = 276
+    ExplicitWidth = 1166
+    object gs: TrDBGrid_MS
+      AlignWithMargins = True
+      Left = 5
+      Top = 28
+      Width = 1158
       Height = 376
-      Align = alBottom
-      Caption = 'Flight List  '
-      TabOrder = 3
-      CaptionHeight = 22
-      CaptionFontColor = clYellow
-      CaptionFont.Charset = DEFAULT_CHARSET
-      CaptionFont.Color = clWindowText
-      CaptionFont.Height = -16
-      CaptionFont.Name = 'Tahoma'
-      CaptionFont.Style = [fsBold]
-      CaptionParentFont = False
-      GradientColorFrom = 15987699
-      GradientColorTo = 15987699
-      ExplicitTop = 310
-      ExplicitWidth = 1168
-      object gs: TrDBGrid_MS
-        AlignWithMargins = True
-        Left = 5
-        Top = 28
-        Width = 1159
-        Height = 343
-        Align = alClient
-        DataSource = DataSource1
-        DefaultDrawing = False
-        DrawingStyle = gdsGradient
-        GradientEndColor = 13303807
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Verdana'
-        Font.Style = []
-        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
-        ParentFont = False
-        ReadOnly = True
-        TabOrder = 0
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -11
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = [fsBold]
-        OnDrawColumnCell = gsDrawColumnCell
-        OnDblClick = gsDblClick
-        OptionsEx2.FixedCell.TitleForceWrapSeparators = '|'
-        OptionsEx2.Appearance.SkipCellHighlight = True
-        OptionsEx2.Appearance.HighlightMultiselect = False
-        OptionsEx2.Filters.TextBar = True
-        OptionsEx2.Filters.TextFilterLikeChar = '%'
-        OptionsEx2.Filters.TextFilterLikeOperator = 'LIKE'
-        GlyphLookStyle = glsFlatBlack
-        ColorActiveRow = 8454143
-        ColumnWidth = cwAutoWidth
-        TitleLines = 2
-        RowLines = 2
-        TitleLineText.Color = clWhite
-        TitleLineText.ParentFont = False
-        TitleLineText.Font.Charset = ANSI_CHARSET
-        TitleLineText.Font.Color = clWindowText
-        TitleLineText.Font.Height = -16
-        TitleLineText.Font.Name = 'Segoe UI'
-        TitleLineText.Font.Style = []
-        FixedColText.FixedColWidth = 20
-        FixedColText.ParentFont = False
-        FixedColText.Font.Charset = DEFAULT_CHARSET
-        FixedColText.Font.Color = clWindowText
-        FixedColText.Font.Height = -11
-        FixedColText.Font.Name = 'Tahoma'
-        FixedColText.Font.Style = []
-        FooterRow.FooterHeight = 20
-        FooterRow.ShowCellLines = False
-        FooterRow.SimpleText = '   Right-click on the flight you want to modify'
-        FieldsAsBoolean.Strings = (
-          'MPSN_X=S;N')
-        FieldsAsDate.Strings = (
-          'DATETIME_ENGINE_START')
-        SelectByClickOnRow = True
-        SelectedRowsBkColor = 12615680
-        SelectedRowsFontColor = clWhite
-        ShowMultiselectPopup = False
-        Columns = <
-          item
-            Expanded = False
-            Font.Charset = ANSI_CHARSET
-            Font.Color = clNavy
-            Font.Height = -13
-            Font.Name = 'Courier New'
-            Font.Style = [fsBold]
-            Title.Alignment = taCenter
-            Title.Caption = '#'
-            Width = 68
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'FLIGHT_NUMBER_X'
-            Title.Alignment = taCenter
-            Title.Caption = 'Flight Number'
-            Width = 68
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'FLIGHT_TYPE_X'
-            Title.Alignment = taCenter
-            Title.Caption = 'Flight Type'
-            Width = 68
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'ENGINE_TYPE'
-            Visible = False
-          end
-          item
-            Expanded = False
-            FieldName = 'MPSN_X'
-            Title.Alignment = taCenter
-            Title.Caption = 'Multi Pilot'
-            Width = 68
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'PILOTS_X'
-            Title.Alignment = taCenter
-            Title.Caption = 'Crew on Duty'
-            Width = 68
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'DUTY_X'
-            Title.Alignment = taCenter
-            Title.Caption = 'Duty'
-            Width = 68
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'DATETIME_ENGINE_START_X'
-            Font.Charset = ANSI_CHARSET
-            Font.Color = clGreen
-            Font.Height = -13
-            Font.Name = 'Verdana'
-            Font.Style = []
-            Title.Alignment = taCenter
-            Title.Caption = 'Engine Start'
-            Width = 68
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'LOCATION_X'
-            Title.Alignment = taCenter
-            Title.Caption = 'Departure|Arrival'
-            Width = 68
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'DATETIME_FLIGHT'
-            Title.Alignment = taCenter
-            Title.Caption = 'Takeoff | Landing'
-            Width = 68
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'ELAPSED_X'
-            Title.Alignment = taCenter
-            Title.Caption = 'Stick to Stick  Block to Block'
-            Width = 68
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'DATETIME_ENGINE_STOP_X'
-            Font.Charset = ANSI_CHARSET
-            Font.Color = clRed
-            Font.Height = -13
-            Font.Name = 'Verdana'
-            Font.Style = []
-            Title.Alignment = taCenter
-            Title.Caption = 'Engine Stop'
-            Width = 68
-            Visible = True
-          end
-          item
-            Alignment = taCenter
-            Expanded = False
-            FieldName = 'ROT_OR_PAX_X'
-            Font.Charset = ANSI_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Verdana'
-            Font.Style = [fsBold]
-            Title.Alignment = taCenter
-            Title.Caption = 'Rot.  Pax'
-            Width = 68
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'NUM_ROT_OR_PAX'
-            Title.Alignment = taCenter
-            Title.Caption = '# R/P'
-            Width = 68
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'LANDINGS'
-            Title.Alignment = taCenter
-            Title.Caption = '# Lndgs'
-            Width = 68
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'ETL_FLIGHT_LOG_ID'
-            Visible = False
-          end
-          item
-            Expanded = False
-            FieldName = 'PARAM_X'
-            Title.Alignment = taCenter
-            Title.Caption = 'Turbine Parameters | N1 N2 N3'
-            Width = 68
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'INTERNAL_FLIGHT_NUMBER'
-            Width = 68
-            Visible = True
-          end>
-      end
+      Align = alClient
+      DataSource = DataSource1
+      DefaultDrawing = False
+      DrawingStyle = gdsGradient
+      GradientEndColor = 13303807
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Verdana'
+      Font.Style = []
+      Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+      ParentFont = False
+      ReadOnly = True
+      TabOrder = 0
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'Tahoma'
+      TitleFont.Style = [fsBold]
+      OnDrawColumnCell = gsDrawColumnCell
+      OnDblClick = gsDblClick
+      OptionsEx2.FixedCell.TitleForceWrapSeparators = '|'
+      OptionsEx2.Appearance.SkipCellHighlight = True
+      OptionsEx2.Appearance.HighlightMultiselect = False
+      OptionsEx2.Filters.TextBar = True
+      OptionsEx2.Filters.TextFilterLikeChar = '%'
+      OptionsEx2.Filters.TextFilterLikeOperator = 'LIKE'
+      GlyphLookStyle = glsFlatBlack
+      ColorActiveRow = 8454143
+      ColumnWidth = cwAutoWidth
+      TitleLines = 2
+      RowLines = 2
+      TitleLineText.Color = clWhite
+      TitleLineText.ParentFont = False
+      TitleLineText.Font.Charset = ANSI_CHARSET
+      TitleLineText.Font.Color = clWindowText
+      TitleLineText.Font.Height = -16
+      TitleLineText.Font.Name = 'Segoe UI'
+      TitleLineText.Font.Style = []
+      FixedColText.FixedColWidth = 20
+      FixedColText.ParentFont = False
+      FixedColText.Font.Charset = DEFAULT_CHARSET
+      FixedColText.Font.Color = clWindowText
+      FixedColText.Font.Height = -11
+      FixedColText.Font.Name = 'Tahoma'
+      FixedColText.Font.Style = []
+      FooterRow.FooterHeight = 20
+      FooterRow.ShowCellLines = False
+      FooterRow.SimpleText = '   Right-click on the flight you want to modify'
+      FieldsAsBoolean.Strings = (
+        'MPSN_X=S;N')
+      FieldsAsDate.Strings = (
+        'DATETIME_ENGINE_START')
+      SelectByClickOnRow = True
+      SelectedRowsBkColor = 12615680
+      SelectedRowsFontColor = clWhite
+      ShowMultiselectPopup = False
+      Columns = <
+        item
+          Expanded = False
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clNavy
+          Font.Height = -13
+          Font.Name = 'Courier New'
+          Font.Style = [fsBold]
+          Title.Alignment = taCenter
+          Title.Caption = '#'
+          Width = 68
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'FLIGHT_NUMBER_X'
+          Title.Alignment = taCenter
+          Title.Caption = 'Flight Number'
+          Width = 68
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'FLIGHT_TYPE_X'
+          Title.Alignment = taCenter
+          Title.Caption = 'Flight Type'
+          Width = 68
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'ENGINE_TYPE'
+          Visible = False
+        end
+        item
+          Expanded = False
+          FieldName = 'MPSN_X'
+          Title.Alignment = taCenter
+          Title.Caption = 'Multi Pilot'
+          Width = 68
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'PILOTS_X'
+          Title.Alignment = taCenter
+          Title.Caption = 'Crew on Duty'
+          Width = 68
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'DUTY_X'
+          Title.Alignment = taCenter
+          Title.Caption = 'Duty'
+          Width = 68
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'DATETIME_ENGINE_START_X'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clGreen
+          Font.Height = -13
+          Font.Name = 'Verdana'
+          Font.Style = []
+          Title.Alignment = taCenter
+          Title.Caption = 'Engine Start'
+          Width = 68
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'LOCATION_X'
+          Title.Alignment = taCenter
+          Title.Caption = 'Departure|Arrival'
+          Width = 68
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'DATETIME_FLIGHT'
+          Title.Alignment = taCenter
+          Title.Caption = 'Takeoff | Landing'
+          Width = 68
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'ELAPSED_X'
+          Title.Alignment = taCenter
+          Title.Caption = 'Stick to Stick  Block to Block'
+          Width = 68
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'DATETIME_ENGINE_STOP_X'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clRed
+          Font.Height = -13
+          Font.Name = 'Verdana'
+          Font.Style = []
+          Title.Alignment = taCenter
+          Title.Caption = 'Engine Stop'
+          Width = 68
+          Visible = True
+        end
+        item
+          Alignment = taCenter
+          Expanded = False
+          FieldName = 'ROT_OR_PAX_X'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Verdana'
+          Font.Style = [fsBold]
+          Title.Alignment = taCenter
+          Title.Caption = 'Rot.  Pax'
+          Width = 68
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'NUM_ROT_OR_PAX'
+          Title.Alignment = taCenter
+          Title.Caption = '# R/P'
+          Width = 68
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'LANDINGS'
+          Title.Alignment = taCenter
+          Title.Caption = '# Lndgs'
+          Width = 68
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'ETL_FLIGHT_LOG_ID'
+          Visible = False
+        end
+        item
+          Expanded = False
+          FieldName = 'PARAM_X'
+          Title.Alignment = taCenter
+          Title.Caption = 'Turbine Parameters | N1 N2 N3'
+          Width = 68
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'INTERNAL_FLIGHT_NUMBER'
+          Width = 68
+          Visible = True
+        end>
     end
   end
   object qp: TFDQuery
@@ -554,16 +570,17 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
       'SELECT TIME(DATETIME_MESSAGE) TIME_X,  M.* '
       'FROM ETL.ETL_MQTT_MESSAGE M'
       'WHERE DATETIME_MESSAGE BETWEEN :DATE_START AND :DATE_END'
-      '--AND YEAR(DATETIME_MESSAGE) > 2020'
+      ''
       'AND MARCHE=:MARCHE'
-      '--AND MQTT_SUBTOPIC=:SUBTOPIC'
+      ''
       'AND PAYLOAD_ALFA<>'#39'NOT-VALID'#39
+      
+        'AND MQTT_CHANNEL <>'#39'E'#39' -- IN REPLAY E CHART LA ELEVATION VIENE C' +
+        'ALCOLATA IN MODO AUTONOMO'
       ' '
-      'ORDER BY DATETIME_MESSAGE,mqtt_message_id;'
+      'ORDER BY DATETIME_MESSAGE;'
       ''
-      ''
-      '---DATETIME_MESSAGE'
-      '---,mqtt_message_id;')
+      '')
     Left = 368
     Top = 264
     ParamData = <

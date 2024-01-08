@@ -2,13 +2,14 @@ program HCBU_WIN64;
 
 uses
   Vcl.Forms,
-  Main in 'Main.pas' {PRINCIPALE} ,
-  LOGIN_U in 'LOGIN_U.pas' {LOGIN_F} ,
-  FLIGHT_SELECT_U in 'FLIGHT_SELECT_U.pas' {FLIGHT_SELECT_F} ,
-  CHART_U in 'CHART_U.pas' {CHART_F} ,
+  Main in 'Main.pas' {PRINCIPALE},
+  LOGIN_U in 'LOGIN_U.pas' {LOGIN_F},
+  FLIGHT_SELECT_U in 'FLIGHT_SELECT_U.pas' {FLIGHT_SELECT_F},
+  CHART_U in 'CHART_U.pas' {CHART_F},
   Vcl.Themes,
   Vcl.Styles,
-  SPLASH_U in 'SPLASH_U.pas' {SPLASH_F};
+  SPLASH_U in 'SPLASH_U.pas' {SPLASH_F},
+  BROADCAST_U in 'BROADCAST_U.pas' {BROADCAST_F};
 
 {$R *.res}
 
@@ -30,7 +31,8 @@ begin
   begin
 
     Application.CreateForm(TPRINCIPALE, PRINCIPALE);
-    PRINCIPALE.AlphaBlend := True;
+  Application.CreateForm(TBROADCAST_F, BROADCAST_F);
+  PRINCIPALE.AlphaBlend := True;
     PRINCIPALE.AlphaBlendValue := 0;
     Application.ProcessMessages;
     Application.CreateForm(TFLIGHT_SELECT_F, FLIGHT_SELECT_F);

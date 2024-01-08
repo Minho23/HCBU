@@ -260,10 +260,10 @@ Published under GPLv3 License.
             //pezzo tolto = Math.sign(vario) *
             var sign = vario.toString()
 			if (sign[0] == "-"){
-				alert(" sono in nrgativo  ");
+				 
 				var deg = -1 * Math.min(Math.abs(vario), 20) * 8.2;
 			}
-			else{				
+			else{
 				var deg = Math.min(Math.abs(vario), 20) * 8.2;
 			}
             if (vario > 20 || vario < - 20) deg += vario % 2;

@@ -17,8 +17,7 @@ type
     ias_marks: TCheckBox;
     ias_smothed: TCheckBox;
     gps_alt: TChart;
-    LineSeries1: TLineSeries;
-    alt_marks: TCheckBox;
+    elev_marks: TCheckBox;
     alt_smoothed: TCheckBox;
     pitch_marks: TCheckBox;
     vsi_smoothed: TCheckBox;
@@ -27,16 +26,21 @@ type
     Series3: TLineSeries;
     c_pitch: TChart;
     Series5: TLineSeries;
-    Series4: THorizLineSeries;
+    Series4: TLineSeries;
     Series2: TLineSeries;
+    Series6: TLineSeries;
+    Series7: TLineSeries;
+    alt_marks: TCheckBox;
+    ScrollBox1: TScrollBox;
     procedure FormShow(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure ias_marksClick(Sender: TObject);
     procedure ias_smothedClick(Sender: TObject);
-    procedure alt_marksClick(Sender: TObject);
+    procedure elev_marksClick(Sender: TObject);
     procedure alt_smoothedClick(Sender: TObject);
     procedure pitch_marksClick(Sender: TObject);
     procedure vsi_smoothedClick(Sender: TObject);
+    procedure alt_marksClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -53,6 +57,14 @@ uses login_u, Main, FLIGHT_SELECT_U;
 
 {$R *.dfm}
 
+procedure TCHART_F.alt_marksClick(Sender: TObject);
+begin
+if alt_marks.Checked = true then
+    gps_alt.Series[0].Marks.Visible := true
+  else
+    gps_alt.Series[0].Marks.Visible := false;
+end;
+
 procedure TCHART_F.alt_smoothedClick(Sender: TObject);
 begin
   if alt_smoothed.Checked = true then
@@ -67,65 +79,49 @@ var
   i: integer;
 
 begin
+  gps_ias.Axes.Bottom.DateTimeFormat:='hh:nn:ss';
+  gps_alt.Axes.Bottom.DateTimeFormat:='hh:nn:ss';
+  c_pitch.Axes.Bottom.DateTimeFormat:='hh:nn:ss';
+  c_g.Axes.Bottom.DateTimeFormat:='hh:nn:ss';
 
   gps_ias.Series[0].Clear;
+  gps_ias.Series[1].Clear;
 
-  // gps_ias.SubTitle.Caption:='FlightTime Interval: '+
-  // datetimetostr(FLIGHT_SELECT_U.start_datetime) +' '+datetimetostr(FLIGHT_SELECT_U.end_datetime);
 
   for i := 1 to Main.Count_gps_ias do
   begin
     if Xgps_ias[i] > 0 then
     begin
-      gps_ias.Series[0].AddXY(Main.Xgps_ias[i], Main.Ygps_ias[i], '',
-        clTeeColor);
-      { if main.Xgps_ias[i]<gps_ias.BottomAxis.Minimum then
-        gps_ias.BottomAxis.Minimum:=Main.Xgps_ias[i];
-        if main.Xgps_ias[i]>gps_ias.BottomAxis.Maximum then
-        gps_ias.BottomAxis.Maximum:=Main.Xgps_ias[i];
-      }
-
+      gps_ias.Series[0].AddXY(Main.Xgps_ias[i], Main.Ygps_ias[i], '', clTeeColor);
+      gps_ias.Series[1].AddXY(Main.Xgps_ias[i], Main.Ygps_VSI[i], '', clTeeColor);
     end;
   end;
   gps_ias.Series[0].Repaint;
+  gps_ias.Series[1].Repaint;
+
 
   gps_alt.Series[0].Clear;
   gps_alt.Series[1].Clear;
   for i := 1 to Main.Count_gps_ALT do
   begin
-    // if Xgps_ALT[i]>0 then  begin
-    gps_alt.Series[0].AddXY(Main.Xgps_ALT[i], Main.Ygps_ALT[i], '', clTeeColor);
-    { if main.Xgps_ALT[i]<gps_ALT.BottomAxis.Minimum then
-      gps_ALT.BottomAxis.Minimum:=Main.Xgps_ALT[i];
-      if main.Xgps_ALT[i]>gps_ALT.BottomAxis.Maximum then
-      gps_ALT.BottomAxis.Maximum:=Main.Xgps_ALT[i];
-    }
+    if Main.Xgps_ALT[i]>0 then begin
+      gps_alt.Series[0].AddXY(Main.Xgps_ALT[i], Main.Ygps_ALT[i], '', clTeeColor);
+      gps_alt.Series[1].AddXY(Main.Xgps_ALT[i], Main.Ygps_HGT[i], '', clTeeColor);
 
-    // showmessage(floattostr(main.Xgps_VSI[i])+'  -  '+floattostr(main.Ygps_VSI[i]));
-    gps_alt.Series[1].AddXY(Main.Xgps_VSI[i], Main.Ygps_VSI[i], '', clTeeColor);
-    // showmessage(floattostr(main.Xgps_VSI[i])+'  -  '+floattostr(main.Ygps_VSI[i]));
-    // end;
+    end;
   end;
   gps_alt.Series[0].Repaint;
   gps_alt.Series[1].Repaint;
 
   c_pitch.Series[0].Clear;
   c_pitch.Series[1].Clear;
-
   for i := 1 to Main.Count_c_pitch do
   begin
 
     if Xc_pitch[i] > 0 then
     begin
-      c_pitch.Series[0].AddXY(Main.Xc_pitch[i], Main.Yc_pitch[i], '',
-        clTeeColor);
-      { if main.Xc_pitch[i]<c_pitch.BottomAxis.Minimum then
-        c_pitch.BottomAxis.Minimum:=Main.Xc_pitch[i];
-        if main.Xc_pitch[i]>c_pitch.BottomAxis.Maximum then
-        c_pitch.BottomAxis.Maximum:=Main.Xc_pitch[i];
-      }
-      c_pitch.Series[1].AddXY(Main.Xc_pitch[i], Main.Yc_roll[i], '',
-        clTeeColor);
+      c_pitch.Series[0].AddXY(Main.Xc_pitch[i], Main.Yc_pitch[i], '',clTeeColor);
+      c_pitch.Series[1].AddXY(Main.Xc_pitch[i], Main.Yc_roll[i], '',clTeeColor);
 
     end;
   end;
@@ -152,12 +148,12 @@ begin
 
 end;
 
-procedure TCHART_F.alt_marksClick(Sender: TObject);
+procedure TCHART_F.elev_marksClick(Sender: TObject);
 begin
-  if alt_marks.Checked = true then
-    gps_alt.Series[0].Marks.Visible := true
+  if elev_marks.Checked = true then
+    gps_alt.Series[1].Marks.Visible := true
   else
-    gps_alt.Series[0].Marks.Visible := false;
+    gps_alt.Series[1].Marks.Visible := false;
 
 end;
 

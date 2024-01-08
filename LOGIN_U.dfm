@@ -1,7 +1,7 @@
 object LOGIN_F: TLOGIN_F
   Left = 0
   Top = 0
-  Caption = 'The Manager - Login'
+  Caption = 'HCBU - Login Form'
   ClientHeight = 282
   ClientWidth = 594
   Color = clBtnFace
@@ -19,7 +19,7 @@ object LOGIN_F: TLOGIN_F
     Width = 594
     Height = 13
     Align = alBottom
-    Caption = '  The Manager  by Intuos Srl - Italy'
+    Caption = 'HyperConnected Base Unit   by Intuos Srl - Italy'
     Color = 8454143
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlue
@@ -29,7 +29,7 @@ object LOGIN_F: TLOGIN_F
     ParentColor = False
     ParentFont = False
     Transparent = False
-    ExplicitWidth = 168
+    ExplicitWidth = 231
   end
   object euser: TLabeledEdit
     Left = 129

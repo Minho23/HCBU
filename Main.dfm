@@ -1,4 +1,5 @@
 object PRINCIPALE: TPRINCIPALE
+  AlignWithMargins = True
   Left = 0
   Top = 0
   Caption = 'HyperConnected Base Unit - INTUOS Srl Italy'
@@ -12,7 +13,7 @@ object PRINCIPALE: TPRINCIPALE
   Font.Style = []
   KeyPreview = True
   Menu = MainMenu1
-  Position = poDesigned
+  Position = poScreenCenter
   OnCreate = FormCreate
   OnKeyUp = FormKeyUp
   OnShow = FormShow
@@ -68,7 +69,7 @@ object PRINCIPALE: TPRINCIPALE
     end
     object bt_connect: TBitBtn
       Left = 16
-      Top = 67
+      Top = 74
       Width = 114
       Height = 33
       Caption = '&Connect'
@@ -101,7 +102,7 @@ object PRINCIPALE: TPRINCIPALE
     end
     object bt_replay: TBitBtn
       Left = 16
-      Top = 106
+      Top = 113
       Width = 114
       Height = 33
       Caption = '&Replay'
@@ -117,7 +118,7 @@ object PRINCIPALE: TPRINCIPALE
     end
     object bt_chart: TBitBtn
       Left = 136
-      Top = 106
+      Top = 113
       Width = 114
       Height = 33
       Caption = 'C&hart'
@@ -133,7 +134,7 @@ object PRINCIPALE: TPRINCIPALE
     end
     object bt_disconnect: TBitBtn
       Left = 136
-      Top = 67
+      Top = 74
       Width = 114
       Height = 33
       Caption = '&Disconnect'
@@ -195,9 +196,9 @@ object PRINCIPALE: TPRINCIPALE
     end
     object bt_cursor: TBitBtn
       Left = 16
-      Top = 145
+      Top = 152
       Width = 234
-      Height = 40
+      Height = 33
       Caption = '&Show/Hide  VCR controls'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
@@ -210,10 +211,10 @@ object PRINCIPALE: TPRINCIPALE
       OnClick = bt_cursorClick
     end
     object bt_update_conn: TBitBtn
-      Left = 184
-      Top = 24
+      Left = 200
+      Top = 19
       Width = 51
-      Height = 37
+      Height = 33
       Caption = 'Update'
       TabOrder = 6
       OnClick = bt_update_connClick
@@ -222,7 +223,7 @@ object PRINCIPALE: TPRINCIPALE
   object memo_send: TMemo
     AlignWithMargins = True
     Left = 24
-    Top = 610
+    Top = 586
     Width = 267
     Height = 42
     Anchors = [akLeft, akBottom]
@@ -234,12 +235,12 @@ object PRINCIPALE: TPRINCIPALE
     ParentFont = False
     ScrollBars = ssVertical
     TabOrder = 1
-    ExplicitTop = 606
+    ExplicitTop = 582
   end
   object bt_send: TBitBtn
     AlignWithMargins = True
     Left = 24
-    Top = 658
+    Top = 642
     Width = 267
     Height = 33
     Anchors = [akLeft, akBottom]
@@ -270,28 +271,7 @@ object PRINCIPALE: TPRINCIPALE
     ParentFont = False
     TabOrder = 2
     OnClick = bt_sendClick
-    ExplicitTop = 654
-  end
-  object rg_channel: TRadioGroup
-    AlignWithMargins = True
-    Left = 24
-    Top = 562
-    Width = 267
-    Height = 42
-    Anchors = [akLeft, akBottom]
-    Caption = 'Sending on'
-    Columns = 2
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -13
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Items.Strings = (
-      'To aircraft'
-      'Broadcast')
-    ParentFont = False
-    TabOrder = 3
-    ExplicitTop = 558
+    ExplicitTop = 638
   end
   object cb_server: TCheckBox
     Left = 450
@@ -300,7 +280,7 @@ object PRINCIPALE: TPRINCIPALE
     Height = 17
     Anchors = [akLeft, akBottom]
     Caption = '&Debug'
-    TabOrder = 4
+    TabOrder = 3
     Visible = False
     ExplicitTop = 212
   end
@@ -324,15 +304,13 @@ object PRINCIPALE: TPRINCIPALE
         Width = 200
       end>
     OnDrawPanel = sb1DrawPanel
-    ExplicitTop = 690
-    ExplicitWidth = 1157
   end
   object r: TrMemoEx
     AlignWithMargins = True
     Left = 24
     Top = 415
     Width = 267
-    Height = 141
+    Height = 160
     Anchors = [akLeft, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -343,7 +321,7 @@ object PRINCIPALE: TPRINCIPALE
     PopupMenu = r.pmSearch
     ReadOnly = True
     ScrollBars = ssBoth
-    TabOrder = 6
+    TabOrder = 5
     ExplicitTop = 411
   end
   object rGroupBox2: TrGroupBox
@@ -353,11 +331,12 @@ object PRINCIPALE: TPRINCIPALE
     Height = 200
     Anchors = [akLeft, akTop, akBottom]
     Caption = 'Virtual Cockpit'
-    TabOrder = 7
+    TabOrder = 6
     CaptionColor = 15395562
     CaptionFontColor = 4194432
     GradientColorFrom = 15987699
     GradientColorTo = 15987699
+    ExplicitHeight = 196
     object wb2: TWebBrowser
       AlignWithMargins = True
       Left = 5
@@ -366,28 +345,9 @@ object PRINCIPALE: TPRINCIPALE
       Height = 175
       Align = alClient
       TabOrder = 0
-      ExplicitLeft = 3
-      ExplicitWidth = 621
+      ExplicitHeight = 171
       ControlData = {
         4C000000FA3F0000161200000000000000000000000000000000000000000000
-        000000004C000000000000000000000001000000E0D057007335CF11AE690800
-        2B2E126208000000000000004C0000000114020000000000C000000000000046
-        8000000000000000000000000000000000000000000000000000000000000000
-        00000000000000000100000000000000000000000000000000000000}
-    end
-    object wb_efis: TWebBrowser
-      AlignWithMargins = True
-      Left = 5
-      Top = 20
-      Width = 619
-      Height = 175
-      Align = alClient
-      TabOrder = 4
-      ExplicitLeft = 3
-      ExplicitWidth = 630
-      ExplicitHeight = 184
-      ControlData = {
-        4C000000FA3F0000161200000100000001020000000000000000000000000000
         000000004C000000000000000000000001000000E0D057007335CF11AE690800
         2B2E126208000000000000004C0000000114020000000000C000000000000046
         8000000000000000000000000000000000000000000000000000000000000000
@@ -401,7 +361,7 @@ object PRINCIPALE: TPRINCIPALE
     Height = 250
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Control Panel'
-    TabOrder = 8
+    TabOrder = 7
     CaptionColor = clBlue
     CaptionFontColor = 8454143
     GradientColorFrom = 15987699
@@ -424,14 +384,14 @@ object PRINCIPALE: TPRINCIPALE
         00000000000000000100000000000000000000000000000000000000}
     end
   end
-  object rGroupBox4: TrGroupBox
+  object s: TrGroupBox
     Left = 671
     Top = 264
     Width = 472
     Height = 427
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = 'GPS Map'
-    TabOrder = 9
+    TabOrder = 8
     CaptionColor = 14024661
     CaptionFontColor = clOlive
     GradientColorFrom = 15987699
@@ -464,7 +424,7 @@ object PRINCIPALE: TPRINCIPALE
     Height = 473
     Anchors = [akLeft, akBottom]
     Caption = 'Telemetry Values'
-    TabOrder = 10
+    TabOrder = 9
     CaptionColor = 16744448
     GradientColorFrom = 15987699
     GradientColorTo = 15987699
@@ -487,12 +447,12 @@ object PRINCIPALE: TPRINCIPALE
     end
   end
   object rg_vcr: TrGroupBox
-    Left = 762
-    Top = 387
+    Left = 778
+    Top = 366
     Width = 289
     Height = 174
     Caption = 'FlightReplay Controls'
-    TabOrder = 11
+    TabOrder = 10
     CaptionHeight = 20
     CaptionColor = 8454016
     CaptionFontColor = 8404992
@@ -1159,9 +1119,8 @@ object PRINCIPALE: TPRINCIPALE
       Top = 84
       Width = 257
       Height = 29
-      Max = 1000
-      Min = 100
-      Position = 100
+      Min = 1
+      Position = 5
       SelEnd = 1000
       SelStart = 100
       ShowSelRange = False
@@ -1190,15 +1149,8 @@ object PRINCIPALE: TPRINCIPALE
   object MainMenu1: TMainMenu
     Left = 794
     Top = 627
-    object Visualize1: TMenuItem
-      Caption = '&EFIS mode'
-      OnClick = Visualize1Click
-    end
-    object N3: TMenuItem
-      Caption = '-'
-    end
     object ListALarmEvent1: TMenuItem
-      Caption = '&List Alarm Event'
+      Caption = '&Manage aircraft'
     end
     object N1: TMenuItem
       Caption = '-'
@@ -1207,6 +1159,13 @@ object PRINCIPALE: TPRINCIPALE
       Caption = '&Manage Alarm Parameters'
     end
     object N2: TMenuItem
+      Caption = '-'
+    end
+    object BROADCASTCHANNEL1: TMenuItem
+      Caption = 'Broadcast channel'
+      OnClick = BROADCASTCHANNEL1Click
+    end
+    object N3: TMenuItem
       Caption = '-'
     end
     object Abput1: TMenuItem
@@ -1253,7 +1212,23 @@ object PRINCIPALE: TPRINCIPALE
     SQL.Strings = (
       'SELECT MARCHE'
       'FROM ANA.ANAAERO')
-    Left = 136
+    Left = 160
     Top = 40
+  end
+  object IdHTTP1: TIdHTTP
+    ProxyParams.BasicAuthentication = False
+    ProxyParams.ProxyPort = 0
+    Request.ContentLength = -1
+    Request.ContentRangeEnd = -1
+    Request.ContentRangeStart = -1
+    Request.ContentRangeInstanceLength = -1
+    Request.Accept = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    Request.BasicAuthentication = False
+    Request.UserAgent = 'Mozilla/3.0 (compatible; Indy Library)'
+    Request.Ranges.Units = 'bytes'
+    Request.Ranges = <>
+    HTTPOptions = [hoForceEncodeParams]
+    Left = 168
+    Top = 448
   end
 end

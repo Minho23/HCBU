@@ -32,7 +32,7 @@ type
     DBGrid2: TrDBGrid;
     qp: TFDQuery;
     DataSource2: TDataSource;
-    BitBtn1: TBitBtn;
+    bt_replay_or_chart: TBitBtn;
     q_select: TFDQuery;
     rgb_fl: TrGroupBox;
     gs: TrDBGrid_MS;
@@ -41,7 +41,7 @@ type
     procedure rg_flight_typeClick(Sender: TObject);
     procedure edateExit(Sender: TObject);
     procedure edateKeyPress(Sender: TObject; var Key: Char);
-    procedure BitBtn1Click(Sender: TObject);
+    procedure bt_replay_or_chartClick(Sender: TObject);
     procedure DBGrid2DblClick(Sender: TObject);
     procedure gsDblClick(Sender: TObject);
     procedure gsDrawColumnCell(Sender: TObject; const Rect: TRect;
@@ -87,7 +87,7 @@ begin
   end;
 end;
 
-procedure TFLIGHT_SELECT_F.BitBtn1Click(Sender: TObject);
+procedure TFLIGHT_SELECT_F.bt_replay_or_chartClick(Sender: TObject);
 
 begin
 

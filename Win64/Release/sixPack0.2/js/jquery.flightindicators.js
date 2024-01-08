@@ -24,7 +24,7 @@ Published under GPLv3 License.
             trueairspeed: 0,
             roll : 0,
             pitch : 0,
-            off_flag: true,
+            off_flag: false,
             ils: true,
             ils_localizer: 0,
             ils_glideslope: 0,

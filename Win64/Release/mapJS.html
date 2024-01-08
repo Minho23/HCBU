@@ -2,23 +2,22 @@
 <html lang="en">
 
 <head>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Flight's Map</title>
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="shortcut icon" type="image/x-icon" href="aereo_marker/aereoNE.png" />
+    <link rel="shortcut icon" type="image/x-icon" href="aereo_offline.png" />
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
         crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-	
         integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
         crossorigin=""></script>
 
-    
+
     <style>
         body {
             padding: 0;
@@ -31,7 +30,8 @@
             height: 100%;
             width: 100%;
         }
-		 .legend {
+
+        .legend {
             padding: 6px 8px;
             font: 14px Arial, Helvetica, sans-serif;
             background: white;
@@ -62,11 +62,16 @@
             opacity: 0.7;
         }
 
-        #downloadButton {
+        .button_map:hover {
+            opacity: 0.8;
+            cursor: pointer;
+        }
+
+        .button_map {
+
             display: flex;
             align-items: center;
             position: absolute;
-            top: 90px;
             left: 8px;
             width: 31px;
             height: 23px;
@@ -78,11 +83,19 @@
             opacity: 0.6;
             text-align: center;
             z-index: 500;
+
         }
 
-        #downloadButton:hover {
-            opacity: 0.8;
-            cursor: pointer;
+        #downloadButton {
+            top: 90px;
+        }
+
+        #cleanButton {
+            top: 150px;
+        }
+
+        #hideLegendButton {
+            top: 210px;
         }
     </style>
 
@@ -95,143 +108,305 @@
 
     <div id="map">
 
-        
-    </div>
-    <script>
-	     
-		//// function latlong(lat1,long1){llat = lat1;llong = long1; return "ciao";};
-        var map;
-		var marker;
-		 var aereo;
-         map = L.map('map').setView([42.36884099097911, 13.36005116706322], 16);
-		 
-		var polylinePoints = [];
+        <!-- <a id="downloadButton" class="button_map" title="Download the file gpx of your flight">
+            <img src="download_cloud.png" width="30" height="22">
 
+        </a> -->
+
+        <a id="cleanButton" class="button_map" title="Clean the track" download target="_blank">
+            <img src="clean.png" width="30" height="22">
+
+        </a>
+
+
+        <a id="hideLegendButton" class="button_map" title="Hide the legend" download target="_blank">
+            <img src="hide_legend.png" width="30" height="22">
+
+        </a>
+
+    </div>
+
+    <script src="leaflet-rotatedmarker/leaflet.rotatedMarker.js"></script>
+
+
+    <script>
+
+        //CONST
+
+        const base_lat = 42.37627313028105
+        const base_long = 13.310113976499471
+        const red = 0
+        const yellow = 60
+        const blue = 240
+        const violet = 270
+        const ZOOM_DEFAULT = 14
+        const MODE = ''
+
+        //VAR
+
+        var map;
+        var marker, marker_start;
+        var aereo;
+        var legend
+        var polylinePoints = [];
+        var polylinePoint = []
+        var polyline
+        var polyArray = []
+        var cleaned = 0
+        var button = document.getElementById('downloadButton');
+        var button2 = document.getElementById('cleanButton');
+        var gpx = '<?xml version="1.0" encoding="UTF-8"?>' + '<gpx version="1.1">' + '<trk><trkseg>'
+        var legend_isHidden = 0;
+
+        //BUTTON EVENT
+
+        // document.getElementById("downloadButton").addEventListener("click", function () {
+        //     let date = new Date()
+        //     let filename = "track" + "_" + date.toLocaleDateString() + "_" + date.getHours() + "." + date.getMinutes() + "." + date.getSeconds() + ".gpx";
+
+        //     gpx += '</trkseg></trk></gpx>'
+        //     download_gpx(filename, gpx);
+
+        // }, false);
+
+        document.getElementById("cleanButton").addEventListener("click", function () {
+            cleanTrack();
+
+        }, false);
+
+        document.getElementById("hideLegendButton").addEventListener("click", function () {
+            hideLegend();
+
+        }, false);
+
+
+        //MAPPA
+
+        map = L.map('map').setView([base_lat, base_long], ZOOM_DEFAULT);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-          aereo = L.icon({
-		   iconUrl: 'aereo_marker/aereoN.png',
-		//shadowUrl: 'leaf-shadow.png',
+        aereo = L.icon({
+            iconUrl: 'aereo_online.png',
+            //shadowUrl: 'leaf-shadow.png',
 
-		iconSize: [40, 40], // size of the icon
-		//shadowSize:   [50, 64], // size of the shadow
-		iconAnchor: [20, 20], // point of the icon which will correspond to marker's location
-		//shadowAnchor: [4, 62],  // the same for the shadow
-		popupAnchor: [-20, -20] // point from which the popup should open relative to the iconAnchor
-	});
+            iconSize: [40, 40], // size of the icon
+            //shadowSize:   [50, 64], // size of the shadow
+            iconAnchor: [20, 20], // point of the icon which will correspond to marker's location
+            //shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor: [-20, -20] // point from which the popup should open relative to the iconAnchor
+        });
 
-     
+        marker = L.marker([base_lat, base_long], { rotationAngle: 0, rotationOrigin: "center", icon: aereo }).addTo(map);
+        marker_start = L.marker();
+        //marker.bindPopup("<b>This is my position</b><br>" + marker.getLatLng());
+        legend = L.control({ position: "bottomleft" });
 
-        var gpx = '<?xml version="1.0" encoding="UTF-8"?>' + '<gpx version="1.1">' + '<trk><trkseg>'
-
-         
-        function addPoint(lat, long) {
-
-            var str = '<trkpt lat="' + lat + '" lon="' + long + '"></trkpt>'
-            gpx += str
-
-        }
-        function download(filename, text) {
-
-            text += '</trkseg></trk></gpx>'
-            var pom = document.createElement('a');
-            var bb = new Blob([text], { type: 'text/plain' });
-
-            pom.setAttribute('href', window.URL.createObjectURL(bb));
-            pom.setAttribute('download', filename);
-
-            pom.dataset.downloadurl = ['text/plain', pom.download, pom.href].join(':');
-            pom.draggable = true;
-            pom.classList.add('dragout');
-
-            pom.click();
-        }
-
-        
-    marker = L.marker([42.36884099097911, 13.36005116706322], { icon: aereo }).addTo(map);
-      marker.bindPopup("<b>I-RACC</b><br>This is my position<br>" + marker.getLatLng());
-	   var legend = L.control({ position: "topright" });
-
-         legend.onAdd = function (map) {
-            var div = L.DomUtil.create("div", "legend");
-            div.innerHTML += "<h4>Legend</h4>";
-            div.innerHTML += '<i style="background :blue"></i><span>>=10000 ft</span><br>';
-            div.innerHTML += '<i style="background :green"></i><span>>5000 <10000 ft</span><br>';
-            div.innerHTML += '<i style="background: yellow"></i><span>5000 ft</span><br>';
-            div.innerHTML += '<i style="background: orange"></i><span> >0 <5000 ft</span><br>';
-            div.innerHTML += '<i style="background: red"></i><span>0 ft</span><br>';
-            div.innerHTML += '<i style="background: black"></i><span>Not elevation data</span><br>';
-
-
+        legend.onAdd = function (map) {
+            let div = L.DomUtil.create("div", "legend");
+            div.innerHTML += "<h3>Legend</h3>";
+            div.innerHTML += "<h4>Track Color</h4>";
+            div.innerHTML += '<i style="background :blue"></i><span> >=10000 ft</span><br>';
+            div.innerHTML += '<i style="background :green"></i><span> >5000 <10000 ft</span><br>';
+            div.innerHTML += '<i style="background: yellow"></i><span> 5000 ft</span><br>';
+            div.innerHTML += '<i style="background: orange"></i><span> >=10 <5000 ft</span><br>';
+            div.innerHTML += '<i style="background: red"></i><span> >=0 <10 ft</span><br>';
+            div.innerHTML += '<span> OFFLINE DATA: dashed line </span><br>';
+            div.innerHTML += "<h4>Icon Color</h4>";
+            div.innerHTML += '<i style="background: green"></i><span>Online </span><br>';
+            div.innerHTML += '<i style="background: black"></i><span>Offline (only replay mode) </span><br>';
             return div;
         };
 
-        legend.addTo(map); 
-		
-		function setColor(alt) {
+        legend.addTo(map);
 
-            var color
-            var result
+
+        //FUNCTIONS
+
+
+        //POPOLA FILE GPX
+
+        function hideLegend() {
+            legend.remove(map)
+            if (legend_isHidden == 1) {
+                legend.addTo(map)
+                legend_isHidden = 0;
+            }
+            else {
+                legend.remove(map)
+                legend_isHidden = 1
+            }
+        }
+
+        function addPoint(lat, long) {
+
+            let str = '<trkpt lat="' + lat + '" lon="' + long + '"></trkpt>'
+            gpx += str
+
+        }
+
+        //DOWNLOAD GPX
+
+        function download_gpx(filename, gpx_text) {
+
+            // text += '</trkseg></trk></gpx>'
+            // let pom = document.createElement('a');
+            // let bb = new Blob([text], { type: 'text/plain' });
+            // if (navigator.msSaveBlob) {
+            //     navigator.msSaveBlob(bb, filename);
+            // }
+
+            var element = document.createElement('a');
+            element.setAttribute('href',
+                'data:text/plain;charset=utf-8, '
+                + encodeURIComponent(gpx_text));
+            element.setAttribute('download', filename);
+
+            // Above code is equivalent to
+            // <a href="path of file" download="file name">
+
+            document.body.appendChild(element);
+
+            //onClick property
+            element.click();
+
+            document.body.removeChild(element);
+
+
+        }
+
+        //MAPPING SIMIL ARDUINO
+
+        function map_color(x, in_min, in_max, out_min, out_max) {
+            return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+        }
+
+        //COLOR A PARTIRE DA HEIGHT
+
+        function setColor(alt) {
+
+            let color, result
+
+            if (alt < 0) {
+                alt = 0
+            }
+
+            console.log("alt: " + alt)
+
             if (alt >= 10000) {
-                color = 'blue'
+                color = "hsl(" + blue + ",100%,50%)"
 
             }
-            else if (alt <= -1) {
-                color = 'black'
+            else if (0 <= alt && alt < 10) {
+                color = "hsl(" + red + ",100%,50%)"
             }
-            else if (alt == 0) {
-                color = 'red'
+
+            else if (10 <= alt && alt < 4999) {
+                console.log("qui 1")
+
+                result = map_color(alt, 10, 5000, 0, 60)
+
+                color = "hsl(" + Math.round(result) + ",100%,50%)"
             }
-            else if (alt == 5000) {
-                color = 'yellow'
+
+            else if (5000 <= alt && alt < 10000) {
+                console.log("qui 2")
+
+                result = map_color(alt, 5000, 9999, 61, 239)
+
+                color = "hsl(" + Math.round(result) + ",100%,50%)"
             }
-            else if (0 < alt && alt < 5000) { //da rosso a giallo
 
-                result = alt * 255 / 4999
-                color = "rgb(255," + Math.round(result) + ",0)"
-
-            }
-            else if (5000 < alt && alt < 10000) {
-
-                result = alt * 255 / 9999
-
-                color = "rgb(0,255," + Math.round(result) + ")"
+            console.log(result)
 
 
-            }
             return color
         }
 
 
-	  
-    function drawLine(lat, long, alt) {
+        //DRAW LINE E SET COLOR
+
+        function drawLine(lat, long, alt, status_connection_old) {
+
             polylinePoints.push([lat, long])
+            polylinePoint.push([lat, long])
             addPoint(lat, long)
-            if (polylinePoints.length == 1) {
-                L.marker([lat, long]).addTo(map)
-                    .bindPopup('<b>Start</b><br>' + marker.getLatLng());
+            if (polylinePoints.length == 1 && cleaned == 0) {
+                marker_start = L.marker([lat, long]).addTo(map)
+                //.bindPopup('<b>Start</b><br>' + marker.getLatLng());
             }
             //console.log(polylinePoints)
-            polyline = L.polyline(polylinePoints, {
-                color: setColor(alt),
-                weight: 4,
-                //opacity: .7,
-                //dashArray: '20,15',
-                lineJoin: 'round'
-            }).addTo(map);
+            if (polylinePoint.length == 3) {
+                polylinePoint.splice(0, 1)
+            }
+
+            if (status_connection_old == 1) {
+
+                //VECCHIO DATO ONLINE QUINDI LINEA CONTINUA
+                polyline = L.polyline(polylinePoint, {
+                    color: setColor(alt),
+                    weight: 4,
+                    lineJoin: 'round'
+                }).addTo(map);
+            }
+            else if (status_connection_old == 0) {
+
+                //VECCHIO DATO OFFLINE QUINDI LINEA TRATTEGGIATA
+                polyline = L.polyline(polylinePoint, {
+                    color: setColor(alt),
+                    weight: 4,
+                    lineJoin: 'round',
+                    dashArray: '5, 10',
+                    dashOffset: '0'
+                }).addTo(map);
+
+            }
+
+
+            polyArray.push(polyline);
         }
 
-function rotateMarker(angle) {
-if (angle == "8"){
-angle = "0"}
-	
-    switch (angle) {
-        case "0":
+        //PULSANTE CLEAN TRACK
+
+        function cleanTrack() {
+            console.log(polylinePoint)
+            console.log(polylinePoints)
+            console.log(polyline)
+            polylinePoint = [];
+            polylinePoints = []
+            for (var i = 0; i < polyArray.length; i++) {
+                polyArray[i].removeFrom(map);
+
+            }
+            cleaned = 1
+            gpx = '<?xml version="1.0" encoding="UTF-8"?>' + '<gpx version="1.1">' + '<trk><trkseg>'
+            marker_start.removeFrom(map);
+
+        }
+
+        //ROTATE MARKER A PARTIRE DA BUSSOLA E STATO CONNESSIONE
+
+        function rotateMarker(angle, connected) {
+
+
+            let path
+
+
+            if (connected == 1) {
+
+
+                path = 'aereo_online.png'
+
+            }
+            else {
+
+                path = 'aereo_offline.png'
+            }
+
             aereo = L.icon({
-                iconUrl: 'aereo_marker/aereoN.png',
+                iconUrl: path,
                 //shadowUrl: 'leaf-shadow.png',
 
                 iconSize: [40, 40], // size of the icon
@@ -242,113 +417,36 @@ angle = "0"}
             });
             marker.setIcon(aereo)
 
-            break;
-        case "1":
-            aereo = L.icon({
-                iconUrl: 'aereo_marker/aereoNE.png',
-                //shadowUrl: 'leaf-shadow.png',
+            marker.setRotationAngle(angle)
 
-                iconSize: [40, 40], // size of the icon
-                //shadowSize:   [50, 64], // size of the shadow
-                iconAnchor: [20, 20], // point of the icon which will correspond to marker's location
-                //shadowAnchor: [4, 62],  // the same for the shadow
-                popupAnchor: [-20, -20] // point from which the popup should open relative to the iconAnchor
-            });
-            marker.setIcon(aereo)
-            break;
-        case "2":
-            aereo = L.icon({
-                iconUrl: 'aereo_marker/aereoE.png',
-                //shadowUrl: 'leaf-shadow.png',
-
-                iconSize: [40, 40], // size of the icon
-                //shadowSize:   [50, 64], // size of the shadow
-                iconAnchor: [20, 20], // point of the icon which will correspond to marker's location
-                //shadowAnchor: [4, 62],  // the same for the shadow
-                popupAnchor: [-20, -20] // point from which the popup should open relative to the iconAnchor
-            });
-            marker.setIcon(aereo)
-            break;
-        case "3":
-            aereo = L.icon({
-                iconUrl: 'aereo_marker/aereoSE.png',
-                //shadowUrl: 'leaf-shadow.png',
-
-                iconSize: [40, 40], // size of the icon
-                //shadowSize:   [50, 64], // size of the shadow
-                iconAnchor: [20, 20], // point of the icon which will correspond to marker's location
-                //shadowAnchor: [4, 62],  // the same for the shadow
-                popupAnchor: [-20, -20] // point from which the popup should open relative to the iconAnchor
-            });
-            marker.setIcon(aereo)
-            break;
-        case "4":
-            aereo = L.icon({
-                iconUrl: 'aereo_marker/aereoS.png',
-                //shadowUrl: 'leaf-shadow.png',
-
-                iconSize: [40, 40], // size of the icon
-                //shadowSize:   [50, 64], // size of the shadow
-                iconAnchor: [20, 20], // point of the icon which will correspond to marker's location
-                //shadowAnchor: [4, 62],  // the same for the shadow
-                popupAnchor: [-20, -20] // point from which the popup should open relative to the iconAnchor
-            });
-            marker.setIcon(aereo)
-            break;
-        case "5":
-            aereo = L.icon({
-                iconUrl: 'aereo_marker/aereoSO.png',
-                //shadowUrl: 'leaf-shadow.png',
-
-                iconSize: [40, 40], // size of the icon
-                //shadowSize:   [50, 64], // size of the shadow
-                iconAnchor: [20, 20], // point of the icon which will correspond to marker's location
-                //shadowAnchor: [4, 62],  // the same for the shadow
-                popupAnchor: [-20, -20] // point from which the popup should open relative to the iconAnchor
-            });
-            marker.setIcon(aereo)
-            break;
-        case "6":
-            aereo = L.icon({
-                iconUrl: 'aereo_marker/aereoO.png',
-                //shadowUrl: 'leaf-shadow.png',
-
-                iconSize: [40, 40], // size of the icon
-                //shadowSize:   [50, 64], // size of the shadow
-                iconAnchor: [20, 20], // point of the icon which will correspond to marker's location
-                //shadowAnchor: [4, 62],  // the same for the shadow
-                popupAnchor: [-20, -20] // point from which the popup should open relative to the iconAnchor
-            });
-            marker.setIcon(aereo)
-            break;
-        case "7":
-            aereo = L.icon({
-                iconUrl: 'aereo_marker/aereoNO.png',
-                //shadowUrl: 'leaf-shadow.png',
-
-                iconSize: [40, 40], // size of the icon
-                //shadowSize:   [50, 64], // size of the shadow
-                iconAnchor: [20, 20], // point of the icon which will correspond to marker's location
-                //shadowAnchor: [4, 62],  // the same for the shadow
-                popupAnchor: [-20, -20] // point from which the popup should open relative to the iconAnchor
-            });
-            marker.setIcon(aereo)
-            break;
-    }
-}
-			//rotateMarker("3");
-            function latlong(llat,llong,aalt){map.setView([llat, llong]);marker.setLatLng([llat, llong]);drawLine(llat,llong,aalt);return "mapsetview lat="+llat;}
-             
-		    function rot_marker(hhdg) {rotateMarker(hhdg);return "rotate "+hhdg;}
-
-            
-			
-			
+        }
 
 
+        //HCBU
+
+        function latlong(llat, llong, aalt, ccon) { map.setView([llat, llong]); marker.setLatLng([llat, llong]); drawLine(llat, llong, aalt, ccon); return "mapsetview lat,long: " + llat + "," + llong; }
+
+        function rot_marker(hhdg, aconnected) { rotateMarker(hhdg, aconnected); return "rotate: " + hhdg; }
+
+        function reset_map() { cleanTrack(); map.setView([base_lat, base_long], ZOOM_DEFAULT); marker.setLatLng([base_lat, base_long]); rotateMarker(0, 1); return 'Success!'; }
+
+
+
+
+        //DEBUG
+
+        if (MODE == 'DEBUG') {
+
+            console.log('DEBUG MODE')
+            latlong(42.399590717301024, 13.342868722886836, 1000, 1)
+            latlong(42.39451990902723, 13.393680487375248, 9000, 1)
+            latlong(42.420883637484515, 13.436939151737004, 5000, 0)
+            latlong(42.40111187988188, 13.535816098849589, 2000, 1)
+        }
+        else {
+            console.log('NORMAL MODE')
+        }
     </script>
-
-
 
 </body>
 
