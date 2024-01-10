@@ -4,6 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.AnsiStrings,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.CheckLst,
   Vcl.ControlList, Vcl.Buttons, Vcl.ComCtrls, FireDAC.Stan.Intf,
@@ -21,19 +22,21 @@ type
     gb_aero: TGroupBox;
     gb_ack: TGroupBox;
     clb_aircraft: TCheckListBox;
-    e_message: TEdit;
     bb_send_message: TBitBtn;
-    q_read_aero: TFDQuery;
+    q_get_aero_with_bb: TFDQuery;
     list_ack: TListView;
     qr_history: TGroupBox;
     m_history: TMemo;
     q_get_history_message: TFDQuery;
     sb1: TStatusBar;
     sbt_connect: TSpeedButton;
+    e_message: TMemo;
     procedure FormShow(Sender: TObject);
     procedure bb_send_messageClick(Sender: TObject);
     procedure sbt_connectClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure sb1DrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel;
+      const Rect: TRect);
 
   private
     { Private declarations }
@@ -44,6 +47,7 @@ type
 
 var
   BROADCAST_F: TBROADCAST_F;
+  panelcolor_sb: tcolor;
 
 implementation
 
@@ -51,15 +55,77 @@ uses Main;
 
 {$R *.dfm}
 
-procedure decode_mqtt_msg(ATopic, msg: string);
+procedure set_ack(marca: string);
+var
+  ListItem: TListItem;
+
 begin
-  BROADCAST_F.m_history.Lines.Append('MESSAGGIO IN ARRIVO');
-  BROADCAST_F.m_history.Lines.Append(msg);
-  BROADCAST_F.m_history.Lines.Append('');
+
+  ListItem := BROADCAST_F.list_ack.FindCaption(0, marca, False, True, False);
+  ListItem.SubItems[0] := 'ACK';
 end;
 
+procedure decode_mqtt_msg(ATopic, msg: string);
+var
+  ind_sep: Integer;
+  last_let, marca: String;
+
+begin
+
+  ind_sep := Pos('/', ATopic);
+
+  if ind_sep > 0 then
+  begin
+    msg := trim(msg);
+    marca := Copy(ATopic, 1, ind_sep - 1);
+    last_let := Copy(ATopic, ind_sep + 1, 1);
+
+    case IndexStr(last_let, ['Z', 'B']) of
+
+      // TOPIC Z
+      0:
+        begin
+          case strtoint(msg) of
+
+            // NON CONNESSO
+            0:
+              begin
+                // ShowMessage('RICEVUTO Z 0 PER: ' + marca);
+                // ShowMessage
+                // (inttostr(BROADCAST_F.clb_aircraft.Items.IndexOf(marca)));
+                BROADCAST_F.clb_aircraft.ItemEnabled
+                  [BROADCAST_F.clb_aircraft.Items.IndexOf(marca)] := False;
+
+              end;
+
+            // CONNESSO
+            1:
+              BROADCAST_F.clb_aircraft.ItemEnabled
+                [BROADCAST_F.clb_aircraft.Items.IndexOf(marca)] := True;
+          end;
+        end;
+
+      // TOPIC B
+      1:
+        begin
+
+          if msg = '$1' then
+          begin
+
+            BROADCAST_U.set_ack(marca);
+          end;
+
+        end;
+
+    end;
+  end;
+
+end;
+
+// SCROLLO COMPLETAMENTE IL MEMO HISTORY
 procedure ScrollToBottom(Memo: TMemo);
 begin
+
   if Memo.Lines.Count > 0 then
   begin
     Memo.Perform(EM_LINESCROLL, 0, Memo.Lines.Count);
@@ -71,15 +137,22 @@ begin
 
   if not PRINCIPALE.mqc.IsConnected then
   begin
-    BROADCAST_F.bb_send_message.Enabled := false;
+    BROADCAST_F.bb_send_message.Enabled := False;
     BROADCAST_F.sbt_connect.Enabled := True;
     BROADCAST_F.sb1.Panels[0].Text := 'Offline';
+
+    panelcolor_sb := clRed;
+    BROADCAST_F.sb1.Canvas.Font.Color := panelcolor_sb;
+
   end
   else
   begin
     BROADCAST_F.bb_send_message.Enabled := True;
-    BROADCAST_F.sbt_connect.Enabled := false;
+    BROADCAST_F.sbt_connect.Enabled := False;
     BROADCAST_F.sb1.Panels[0].Text := 'Online';
+
+    panelcolor_sb := clGreen;
+    BROADCAST_F.sb1.Canvas.Font.Color := panelcolor_sb;
   end;
 end;
 
@@ -88,6 +161,10 @@ begin
   with BROADCAST_F do
   begin
     BROADCAST_F.sb1.Panels[0].Text := 'Status connection';
+
+    panelcolor_sb := clBlack;
+    BROADCAST_F.sb1.Canvas.Font.Color := panelcolor_sb;
+
     clb_aircraft.Items.Clear;
     list_ack.Items.Clear;
     e_message.Clear;
@@ -105,7 +182,7 @@ begin
     NuovoElemento := list_ack.Items.Add;
     NuovoElemento.Caption := MarcaAereo;
     // Puoi aggiungere ulteriori sottocolonne se necessario:
-    // NuovoElemento.SubItems.Add('AltroDato');
+    NuovoElemento.SubItems.Add('');
   end;
 
 end;
@@ -128,18 +205,19 @@ begin
 
   with PRINCIPALE do
   begin
-    b := false;
+    b := False;
 
     for i := 0 to clb_aircraft.Items.Count - 1 do
     begin
 
-      // Se ci sono sottocolonne, puoi accedere a esse utilizzando SubItems
-      if clb_aircraft.Checked[i] then
+      // INVIO A TUTTE LE MARCHE CHECKATE E ONLINE
+      if clb_aircraft.Checked[i] and clb_aircraft.ItemEnabled[i] then
       begin
         mqc.Publish(clb_aircraft.Items[i] + '/B', e_message.Text);
         b := True;
 
-        m_history.Lines.Append(datetimetostr(now));
+        // INSERISCO NEL MEMO DELLA HISTORY IL CAMPO MESSAGGIO
+        m_history.Lines.Append(Datetimetostr(now));
         m_history.Lines.Append(clb_aircraft.Items[i]);
         m_history.Lines.Append(e_message.Text);
         m_history.Lines.Append('');
@@ -149,11 +227,20 @@ begin
     end;
 
     if b then
-      DlgI('Sent broadcast message to checked aircrafts.')
+    begin
+      DlgI('Sent broadcast message to checked aircrafts.');
+      // CANCELLO TESTO DEL MESSAGGIO
+      e_message.Clear;
+
+      // AZZERO CAMPO ACK NELLA TLISTVIEW
+      for i := 0 to list_ack.Items.Count - 1 do
+      begin
+        // Azzera il valore nella seconda colonna (indice 1)
+        list_ack.Items[i].SubItems[0] := '';
+      end;
+    end
     else
       DlgI('No aircraft selected.');
-
-    e_message.Clear;
 
   end;
 
@@ -183,21 +270,19 @@ begin
   ClearAll;
   check_mqtt;
 
-  q_read_aero.open();
-  while not q_read_aero.Eof do
+  q_get_aero_with_bb.open();
+  while not q_get_aero_with_bb.Eof do
   begin
-    clb_aircraft.Items.Add(q_read_aero['MARCHE']);
-    AggiungiElemento(q_read_aero['MARCHE']);
-    q_read_aero.Next;
+    clb_aircraft.Items.Add(q_get_aero_with_bb['MARCHE']);
+    AggiungiElemento(q_get_aero_with_bb['MARCHE']);
+    q_get_aero_with_bb.Next;
   end;
-  q_read_aero.close();
+  q_get_aero_with_bb.close();
 
   DataOdiernaUTC := GetUTCNow;
 
   // Estrai giorno, mese, anno, ora, minuto, secondo e millisecondo dalla data UTC
   DecodeDate(DataOdiernaUTC, Anno, Mese, Giorno);
-
-  // ShowMessage('DATA: ' + DateToStr(DataOdiernaUTC));
 
   with q_get_history_message do
   begin
@@ -212,8 +297,7 @@ begin
   if q_get_history_message.RecordCount = 0 then
     exit;
 
-  // ShowMessage('record count: ' + inttostr(q_get_history_message.RecordCount));
-
+  // GET DELLO STORICO MESSAGGI BROADCAST DELLA GIORNATA ODIERNA
   while not q_get_history_message.Eof do
   begin
 
@@ -229,8 +313,25 @@ begin
 
 end;
 
+procedure TBROADCAST_F.sb1DrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel;
+  const Rect: TRect);
+begin
+  if (Panel = StatusBar.Panels[0]) then
+  begin
+    with sb1 do
+    begin
+      Canvas.Font.Color := panelcolor_sb;
+      Canvas.TextOut(Rect.Left + 5, Rect.Top - 2, Panel.Text);
+    end;
+  end;
+end;
+
 procedure TBROADCAST_F.sbt_connectClick(Sender: TObject);
 begin
+  // SET DELLA VARIABILE GLOBALE CONDIVISA CON UNIT MAIN PER GESTIRE DIFFERENTEMENTE LE CALLBACK
+  // MQTT A SECONDA DEL TIPO DI CONNESSIONE
+  // CONNESSIONE 1: CONNESSIONE ONE TO ONE SELEZIONANDO LA MARCA NELLA FORM PRINCIPALE
+  // CONNESSIONE 2: CONNESSIONE GENERICA DIRETTAMENTE NELLA FORM DEL CANALE BROADCAST
   TYPE_OF_CONNECTION := 2;
   connect_mqtt;
 

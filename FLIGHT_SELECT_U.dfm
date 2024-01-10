@@ -254,7 +254,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
             Font.Name = 'Tahoma'
             Font.Style = []
             Title.Alignment = taCenter
-            Title.Caption = 'Open?'
+            Title.Caption = 'Open'
             Width = 70
             Visible = True
           end

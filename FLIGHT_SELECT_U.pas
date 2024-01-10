@@ -48,6 +48,7 @@ type
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure edata1Exit(Sender: TObject);
     procedure FormShow(Sender: TObject);
+
   private
     { Private declarations }
   public
@@ -83,6 +84,7 @@ procedure TFLIGHT_SELECT_F.bt_replay_or_chartClick(Sender: TObject);
 
 begin
 
+  // AGGIUNGERE IF PER ETL
   with q_select do
   begin
     close;

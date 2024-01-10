@@ -3,7 +3,7 @@ object BROADCAST_F: TBROADCAST_F
   Top = 0
   BorderStyle = bsSizeToolWin
   Caption = 'Broadcast channel'
-  ClientHeight = 400
+  ClientHeight = 405
   ClientWidth = 788
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -12,7 +12,6 @@ object BROADCAST_F: TBROADCAST_F
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poDesktopCenter
-  OnClose = FormClose
   OnShow = FormShow
   TextHeight = 15
   object gb_message: TGroupBox
@@ -20,40 +19,38 @@ object BROADCAST_F: TBROADCAST_F
     Left = 303
     Top = 3
     Width = 227
-    Height = 220
+    Height = 225
     Align = alClient
     Caption = 'Broadcast message'
     TabOrder = 0
     ExplicitWidth = 221
-    ExplicitHeight = 233
-    DesignSize = (
-      227
-      220)
+    ExplicitHeight = 211
     object sbt_connect: TSpeedButton
       AlignWithMargins = True
-      Left = 64
+      Left = 62
       Top = 28
       Width = 89
       Height = 21
       Caption = 'Connect'
       OnClick = sbt_connectClick
     end
-    object e_message: TEdit
-      Left = 16
-      Top = 96
-      Width = 193
-      Height = 31
-      Anchors = [akLeft, akTop, akRight]
-      TabOrder = 0
-    end
     object bb_send_message: TBitBtn
       Left = 45
-      Top = 144
+      Top = 168
       Width = 123
       Height = 33
       Caption = 'Send'
-      TabOrder = 1
+      TabOrder = 0
       OnClick = bb_send_messageClick
+    end
+    object e_message: TMemo
+      AlignWithMargins = True
+      Left = 34
+      Top = 98
+      Width = 145
+      Height = 64
+      ScrollBars = ssVertical
+      TabOrder = 1
     end
   end
   object gb_aero: TGroupBox
@@ -61,22 +58,22 @@ object BROADCAST_F: TBROADCAST_F
     Left = 3
     Top = 3
     Width = 294
-    Height = 220
+    Height = 225
     Align = alLeft
     Caption = 'Registrations'
     TabOrder = 1
-    ExplicitHeight = 233
+    ExplicitHeight = 211
     object clb_aircraft: TCheckListBox
       AlignWithMargins = True
       Left = 5
       Top = 20
       Width = 284
-      Height = 195
+      Height = 200
       Align = alClient
-      AllowGrayed = True
       ItemHeight = 15
       TabOrder = 0
-      ExplicitHeight = 208
+      ExplicitLeft = 3
+      ExplicitTop = 22
     end
   end
   object gb_ack: TGroupBox
@@ -84,18 +81,18 @@ object BROADCAST_F: TBROADCAST_F
     Left = 536
     Top = 3
     Width = 249
-    Height = 220
+    Height = 225
     Align = alRight
     Caption = 'Acknowledge'
     TabOrder = 2
     ExplicitLeft = 530
-    ExplicitHeight = 233
+    ExplicitHeight = 211
     object list_ack: TListView
       AlignWithMargins = True
       Left = 5
       Top = 20
       Width = 239
-      Height = 195
+      Height = 200
       Align = alClient
       Columns = <
         item
@@ -109,19 +106,19 @@ object BROADCAST_F: TBROADCAST_F
         end>
       TabOrder = 0
       ViewStyle = vsReport
-      ExplicitHeight = 208
+      ExplicitHeight = 186
     end
   end
   object qr_history: TGroupBox
     AlignWithMargins = True
     Left = 3
-    Top = 229
+    Top = 234
     Width = 782
     Height = 141
     Align = alBottom
     Caption = 'Message history'
     TabOrder = 3
-    ExplicitTop = 242
+    ExplicitTop = 220
     ExplicitWidth = 776
     object m_history: TMemo
       AlignWithMargins = True
@@ -132,25 +129,35 @@ object BROADCAST_F: TBROADCAST_F
       Align = alClient
       ScrollBars = ssVertical
       TabOrder = 0
+      ExplicitWidth = 766
     end
   end
   object sb1: TStatusBar
     AlignWithMargins = True
     Left = 3
-    Top = 376
+    Top = 381
     Width = 782
     Height = 21
     Panels = <
       item
+        Style = psOwnerDraw
         Text = 'Status connection '
         Width = 50
       end>
+    OnDrawPanel = sb1DrawPanel
+    ExplicitTop = 367
+    ExplicitWidth = 776
   end
-  object q_read_aero: TFDQuery
+  object q_get_aero_with_bb: TFDQuery
     Connection = PRINCIPALE.cn1
     SQL.Strings = (
       'SELECT MARCHE'
-      'FROM ANA.ANAAERO')
+      'FROM ANA.ANAAERO'
+      'WHERE EXISTS ('
+      '    SELECT 1'
+      '    FROM ETL.ETL_MQTT_MESSAGE'
+      '    WHERE ETL.ETL_MQTT_MESSAGE.MARCHE = ANA.ANAAERO.MARCHE'
+      ');')
     Left = 40
     Top = 32
   end

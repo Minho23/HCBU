@@ -217,6 +217,7 @@ object PRINCIPALE: TPRINCIPALE
       Height = 33
       Caption = 'Update'
       TabOrder = 6
+      Visible = False
       OnClick = bt_update_connClick
     end
   end
@@ -1215,7 +1216,12 @@ object PRINCIPALE: TPRINCIPALE
     Connection = cn1
     SQL.Strings = (
       'SELECT MARCHE'
-      'FROM ANA.ANAAERO')
+      'FROM ANA.ANAAERO'
+      'WHERE EXISTS ('
+      '    SELECT 1'
+      '    FROM ETL.ETL_MQTT_MESSAGE'
+      '    WHERE ETL.ETL_MQTT_MESSAGE.MARCHE = ANA.ANAAERO.MARCHE'
+      ');')
     Left = 160
     Top = 40
   end
