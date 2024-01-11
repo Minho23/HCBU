@@ -1015,7 +1015,8 @@ begin
     if (height_i < 0) then
       height_i := 0;
 
-    if not(takeoff_past) then
+    // SE NON è GIà AVVENUTO IL TAKEOFF
+    if not takeoff_past then
     begin
 
       if (is_takeoff(height_i, ias_kts_int)) then
@@ -1028,13 +1029,12 @@ begin
         landing_past := false;
 
       end;
-    end;
-
-    if (takeoff_past) then
+    end
+    else
     begin
 
-      // ShowMessage('takeoff già fatto');
-      if Not(landing_past) then
+      // SE NON E' AVVENUTO L'ATTERRAGGIO
+      if Not landing_past then
       begin
 
         if (is_landing(height_i)) then
@@ -1648,7 +1648,7 @@ begin
             // messaggi from WEBUNIT
             time_mex := copy(msg, 1, pos(';', msg) - 1);
             mex := copy(msg, pos(';', msg) + 1);
-            r.Lines.Append(time_mex);
+            // r.Lines.Append(time_mex);
             r.Lines.Append('<--- WebUnit : ' + mex);
             r.Lines.Append('');
 
@@ -1659,7 +1659,7 @@ begin
             // messaggi from 1TO1
             time_mex := copy(msg, 1, pos(';', msg) - 1);
             mex := copy(msg, pos(';', msg) + 1);
-            r.Lines.Append(time_mex);
+            // r.Lines.Append(time_mex);
             r.Lines.Append('---> ' + mex);
             r.Lines.Append('');
 
@@ -1686,11 +1686,6 @@ begin
       end; // case
 
       // ShowMessage('END DECODE');
-
-    end
-    else
-    begin
-      r.Lines.Append(msg);
 
     end;
 

@@ -11,7 +11,8 @@ object BROADCAST_F: TBROADCAST_F
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
-  Position = poDesktopCenter
+  Position = poScreenCenter
+  OnClose = FormClose
   OnShow = FormShow
   TextHeight = 15
   object gb_message: TGroupBox
@@ -72,8 +73,7 @@ object BROADCAST_F: TBROADCAST_F
       Align = alClient
       ItemHeight = 15
       TabOrder = 0
-      ExplicitLeft = 3
-      ExplicitTop = 22
+      ExplicitHeight = 186
     end
   end
   object gb_ack: TGroupBox
