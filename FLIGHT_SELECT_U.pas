@@ -16,7 +16,7 @@ procedure AZZERA_CAMPI;
 
 type
   TFLIGHT_SELECT_F = class(TForm)
-    rGroupBox1: TrGroupBox;
+    rgb_fsearch: TrGroupBox;
     rg_flight_type: TRadioGroup;
     rgb_limit: TrGroupBox;
     Label2: TLabel;
@@ -38,6 +38,7 @@ type
     gs: TrDBGrid_MS;
     q1: TFDQuery;
     DataSource1: TDataSource;
+    bt_search_by_flight: TBitBtn;
     procedure rg_flight_typeClick(Sender: TObject);
     procedure edateExit(Sender: TObject);
     procedure edateKeyPress(Sender: TObject; var Key: Char);
@@ -48,6 +49,7 @@ type
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure edata1Exit(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure bt_search_by_flightClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -58,10 +60,11 @@ type
 var
   FLIGHT_SELECT_F: TFLIGHT_SELECT_F;
   start_datetime, end_datetime: TDateTime;
+  CLICK_FOR_REPLAY: Boolean;
 
 implementation
 
-uses login_u, Main;
+uses login_u, Main, SEARCH_FLIGHT_U;
 
 {$R *.dfm}
 
@@ -83,7 +86,7 @@ end;
 procedure TFLIGHT_SELECT_F.bt_replay_or_chartClick(Sender: TObject);
 
 begin
-
+  CLICK_FOR_REPLAY := true;
   // AGGIUNGERE IF PER ETL
   with q_select do
   begin
@@ -94,12 +97,21 @@ begin
     open;
   end;
 
+  // SERVE PER IL CHARTING
   start_datetime := edata1.Date;
   Replacetime(start_datetime, etime1.Time);
   end_datetime := edata2.Date;
   Replacetime(end_datetime, etime2.Time);
 
   FLIGHT_SELECT_F.close;
+end;
+
+procedure TFLIGHT_SELECT_F.bt_search_by_flightClick(Sender: TObject);
+begin
+
+  SEARCH_FLIGHT_F.ShowModal;
+  FLIGHT_SELECT_F.close;
+
 end;
 
 procedure TFLIGHT_SELECT_F.DBGrid2DblClick(Sender: TObject);
@@ -152,6 +164,16 @@ begin
 
   etime1.Time := now();
   etime2.Time := now();
+
+  edate.Date := now();
+
+  // per verificare dal main se c'è stata una richiesta di replay
+  CLICK_FOR_REPLAY := false;
+
+  // CHECK BOX LIST CHECK
+  rg_flight_type.ItemIndex := -1;
+  rgb_limit.Enabled := false;
+  rgb_etl.Enabled := false;
 
 end;
 

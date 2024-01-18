@@ -7,7 +7,7 @@ object CHART_F: TCHART_F
   VertScrollBar.ButtonSize = 10
   VertScrollBar.Range = 10000
   VertScrollBar.Size = 4
-  Caption = 'HyperConnected Base Unit - INTUOS Srl Italy'
+  Caption = 'HCBU - Chart'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

@@ -13,7 +13,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
   Position = poScreenCenter
   OnShow = FormShow
   TextHeight = 13
-  object rGroupBox1: TrGroupBox
+  object rgb_fsearch: TrGroupBox
     AlignWithMargins = True
     Left = 3
     Top = 3
@@ -37,9 +37,9 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
     ExplicitHeight = 267
     object rg_flight_type: TRadioGroup
       AlignWithMargins = True
-      Left = 33
+      Left = 25
       Top = 33
-      Width = 161
+      Width = 136
       Height = 216
       Caption = 'Type of Selection'
       Items.Strings = (
@@ -50,9 +50,9 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
     end
     object rgb_limit: TrGroupBox
       AlignWithMargins = True
-      Left = 256
-      Top = 31
-      Width = 249
+      Left = 167
+      Top = 33
+      Width = 531
       Height = 218
       Caption = 'Selection Liimit'
       TabOrder = 1
@@ -66,9 +66,9 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
       GradientColorTo = 15987699
       object Label2: TLabel
         Left = 16
-        Top = 33
-        Width = 176
-        Height = 13
+        Top = 32
+        Width = 233
+        Height = 14
         AutoSize = False
         Caption = 'Low Limit'
         Color = clSkyBlue
@@ -76,16 +76,16 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
         Font.Color = clWindowText
         Font.Height = -13
         Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
+        Font.Style = []
         ParentColor = False
         ParentFont = False
         Transparent = False
       end
       object Label1: TLabel
         Left = 17
-        Top = 97
-        Width = 169
-        Height = 13
+        Top = 96
+        Width = 232
+        Height = 14
         AutoSize = False
         Caption = 'High Limit'
         Color = clSkyBlue
@@ -93,7 +93,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
         Font.Color = clWindowText
         Font.Height = -13
         Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
+        Font.Style = []
         ParentColor = False
         ParentFont = False
         Transparent = False
@@ -101,7 +101,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
       object edata1: TDateTimePicker
         Left = 18
         Top = 52
-        Width = 103
+        Width = 119
         Height = 27
         Date = 45201.000000000000000000
         Time = 0.540972002323542300
@@ -115,9 +115,9 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
         OnExit = edata1Exit
       end
       object etime1: TDateTimePicker
-        Left = 127
+        Left = 151
         Top = 52
-        Width = 65
+        Width = 98
         Height = 27
         Date = 44499.000000000000000000
         Format = 'HH:mm:00'
@@ -134,7 +134,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
       object edata2: TDateTimePicker
         Left = 17
         Top = 116
-        Width = 103
+        Width = 120
         Height = 27
         Date = 44739.000000000000000000
         Time = 44739.000000000000000000
@@ -147,9 +147,9 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
         TabOrder = 2
       end
       object etime2: TDateTimePicker
-        Left = 126
+        Left = 151
         Top = 116
-        Width = 65
+        Width = 99
         Height = 27
         Date = 44499.000000000000000000
         Format = 'HH:mm:00'
@@ -164,9 +164,9 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
         TabOrder = 3
       end
       object bt_replay_or_chart: TBitBtn
-        Left = 16
+        Left = 96
         Top = 168
-        Width = 177
+        Width = 89
         Height = 33
         Caption = '&Replay'
         Font.Charset = DEFAULT_CHARSET
@@ -178,11 +178,27 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
         TabOrder = 4
         OnClick = bt_replay_or_chartClick
       end
+      object bt_search_by_flight: TBitBtn
+        AlignWithMargins = True
+        Left = 336
+        Top = 168
+        Width = 129
+        Height = 33
+        Caption = '&Search by flight'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGreen
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 5
+        OnClick = bt_search_by_flightClick
+      end
     end
     object rgb_etl: TrGroupBox
-      Left = 560
+      Left = 704
       Top = 31
-      Width = 513
+      Width = 441
       Height = 218
       Caption = 'Flight from eTL'
       TabOrder = 2
@@ -198,22 +214,23 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
         AlignWithMargins = True
         Left = 5
         Top = 20
-        Width = 503
+        Width = 431
         Height = 41
         Align = alTop
         TabOrder = 0
+        ExplicitWidth = 503
         object Label3: TLabel
-          Left = 8
+          Left = 40
           Top = 14
-          Width = 115
+          Width = 137
           Height = 13
           Caption = 'Select Date of eTL Page'
         end
         object edate: TDateTimePicker
-          Left = 185
+          Left = 233
           Top = 6
-          Width = 186
-          Height = 21
+          Width = 152
+          Height = 32
           Date = 44586.000000000000000000
           Time = 0.499024444441602100
           TabOrder = 0
@@ -224,7 +241,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
       object DBGrid2: TrDBGrid
         Left = 2
         Top = 64
-        Width = 509
+        Width = 437
         Height = 152
         Align = alClient
         DataSource = DataSource2
@@ -300,7 +317,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
     Width = 1168
     Height = 409
     Align = alBottom
-    Caption = 'Flight List  '
+    Caption = 'Flights List  '
     TabOrder = 1
     CaptionHeight = 22
     CaptionFontColor = clYellow
@@ -371,8 +388,6 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
       FooterRow.SimpleText = '   Right-click on the flight you want to modify'
       FieldsAsBoolean.Strings = (
         'MPSN_X=S;N')
-      FieldsAsDate.Strings = (
-        'DATETIME_ENGINE_START')
       SelectByClickOnRow = True
       SelectedRowsBkColor = 12615680
       SelectedRowsFontColor = clWhite
@@ -387,7 +402,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
           Font.Style = [fsBold]
           Title.Alignment = taCenter
           Title.Caption = '#'
-          Width = 68
+          Width = 52
           Visible = True
         end
         item
@@ -395,7 +410,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
           FieldName = 'FLIGHT_NUMBER_X'
           Title.Alignment = taCenter
           Title.Caption = 'Flight Number'
-          Width = 68
+          Width = 69
           Visible = True
         end
         item
@@ -403,7 +418,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
           FieldName = 'FLIGHT_TYPE_X'
           Title.Alignment = taCenter
           Title.Caption = 'Flight Type'
-          Width = 68
+          Width = 69
           Visible = True
         end
         item
@@ -416,7 +431,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
           FieldName = 'MPSN_X'
           Title.Alignment = taCenter
           Title.Caption = 'Multi Pilot'
-          Width = 68
+          Width = 69
           Visible = True
         end
         item
@@ -424,7 +439,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
           FieldName = 'PILOTS_X'
           Title.Alignment = taCenter
           Title.Caption = 'Crew on Duty'
-          Width = 68
+          Width = 69
           Visible = True
         end
         item
@@ -432,7 +447,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
           FieldName = 'DUTY_X'
           Title.Alignment = taCenter
           Title.Caption = 'Duty'
-          Width = 68
+          Width = 69
           Visible = True
         end
         item
@@ -445,7 +460,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
           Font.Style = []
           Title.Alignment = taCenter
           Title.Caption = 'Engine Start'
-          Width = 68
+          Width = 69
           Visible = True
         end
         item
@@ -453,7 +468,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
           FieldName = 'LOCATION_X'
           Title.Alignment = taCenter
           Title.Caption = 'Departure|Arrival'
-          Width = 68
+          Width = 69
           Visible = True
         end
         item
@@ -461,7 +476,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
           FieldName = 'DATETIME_FLIGHT'
           Title.Alignment = taCenter
           Title.Caption = 'Takeoff | Landing'
-          Width = 68
+          Width = 69
           Visible = True
         end
         item
@@ -469,7 +484,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
           FieldName = 'ELAPSED_X'
           Title.Alignment = taCenter
           Title.Caption = 'Stick to Stick  Block to Block'
-          Width = 68
+          Width = 69
           Visible = True
         end
         item
@@ -482,7 +497,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
           Font.Style = []
           Title.Alignment = taCenter
           Title.Caption = 'Engine Stop'
-          Width = 68
+          Width = 69
           Visible = True
         end
         item
@@ -496,7 +511,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
           Font.Style = [fsBold]
           Title.Alignment = taCenter
           Title.Caption = 'Rot.  Pax'
-          Width = 68
+          Width = 69
           Visible = True
         end
         item
@@ -504,7 +519,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
           FieldName = 'NUM_ROT_OR_PAX'
           Title.Alignment = taCenter
           Title.Caption = '# R/P'
-          Width = 68
+          Width = 69
           Visible = True
         end
         item
@@ -512,7 +527,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
           FieldName = 'LANDINGS'
           Title.Alignment = taCenter
           Title.Caption = '# Lndgs'
-          Width = 68
+          Width = 69
           Visible = True
         end
         item
@@ -525,13 +540,13 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
           FieldName = 'PARAM_X'
           Title.Alignment = taCenter
           Title.Caption = 'Turbine Parameters | N1 N2 N3'
-          Width = 68
+          Width = 69
           Visible = True
         end
         item
           Expanded = False
           FieldName = 'INTERNAL_FLIGHT_NUMBER'
-          Width = 68
+          Width = 69
           Visible = True
         end>
     end
@@ -543,8 +558,8 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
       'FROM ETL.ETL_PAGES'
       'WHERE MARCHE=:MARCHE'
       'AND date(DATETIME_OPEN_PAGE)=:DT')
-    Left = 432
-    Top = 264
+    Left = 752
+    Top = 152
     ParamData = <
       item
         Name = 'MARCHE'
@@ -561,8 +576,8 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
   end
   object DataSource2: TDataSource
     DataSet = qp
-    Left = 512
-    Top = 272
+    Left = 808
+    Top = 152
   end
   object q_select: TFDQuery
     Connection = PRINCIPALE.cn1
@@ -581,18 +596,16 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
       'ORDER BY DATETIME_MESSAGE;'
       ''
       '')
-    Left = 368
-    Top = 264
+    Left = 528
+    Top = 96
     ParamData = <
       item
         Name = 'DATE_START'
-        DataType = ftString
         ParamType = ptInput
         Value = Null
       end
       item
         Name = 'DATE_END'
-        DataType = ftString
         ParamType = ptInput
         Value = Null
       end
@@ -686,7 +699,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
       ''
       '--FETCH FIRST 10 ROWS ONLY')
     Left = 120
-    Top = 408
+    Top = 448
     ParamData = <
       item
         Name = 'FROM_ID'
@@ -703,7 +716,7 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
   end
   object DataSource1: TDataSource
     DataSet = q1
-    Left = 208
-    Top = 408
+    Left = 152
+    Top = 448
   end
 end

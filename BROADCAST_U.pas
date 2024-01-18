@@ -31,6 +31,7 @@ type
     sb1: TStatusBar;
     sbt_connect: TSpeedButton;
     e_message: TMemo;
+    p_title: TPanel;
     procedure FormShow(Sender: TObject);
     procedure bb_send_messageClick(Sender: TObject);
     procedure sbt_connectClick(Sender: TObject);

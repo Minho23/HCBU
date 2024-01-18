@@ -2,9 +2,9 @@ object BROADCAST_F: TBROADCAST_F
   Left = 0
   Top = 0
   BorderStyle = bsSizeToolWin
-  Caption = 'Broadcast channel'
-  ClientHeight = 405
-  ClientWidth = 788
+  Caption = 'HCBU - Broadcast channel'
+  ClientHeight = 434
+  ClientWidth = 806
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,39 +17,41 @@ object BROADCAST_F: TBROADCAST_F
   TextHeight = 15
   object gb_message: TGroupBox
     AlignWithMargins = True
-    Left = 303
-    Top = 3
-    Width = 227
-    Height = 225
+    Left = 247
+    Top = 50
+    Width = 315
+    Height = 207
     Align = alClient
     Caption = 'Broadcast message'
     TabOrder = 0
+    ExplicitLeft = 303
+    ExplicitTop = 3
     ExplicitWidth = 221
     ExplicitHeight = 211
     object sbt_connect: TSpeedButton
       AlignWithMargins = True
-      Left = 62
-      Top = 28
+      Left = 118
+      Top = 44
       Width = 89
       Height = 21
       Caption = 'Connect'
       OnClick = sbt_connectClick
     end
     object bb_send_message: TBitBtn
-      Left = 45
-      Top = 168
-      Width = 123
-      Height = 33
+      Left = 231
+      Top = 128
+      Width = 65
+      Height = 34
       Caption = 'Send'
       TabOrder = 0
       OnClick = bb_send_messageClick
     end
     object e_message: TMemo
       AlignWithMargins = True
-      Left = 34
-      Top = 98
-      Width = 145
-      Height = 64
+      Left = 16
+      Top = 104
+      Width = 209
+      Height = 81
       ScrollBars = ssVertical
       TabOrder = 1
     end
@@ -57,42 +59,40 @@ object BROADCAST_F: TBROADCAST_F
   object gb_aero: TGroupBox
     AlignWithMargins = True
     Left = 3
-    Top = 3
-    Width = 294
-    Height = 225
+    Top = 50
+    Width = 238
+    Height = 207
     Align = alLeft
     Caption = 'Registrations'
     TabOrder = 1
-    ExplicitHeight = 211
     object clb_aircraft: TCheckListBox
       AlignWithMargins = True
       Left = 5
       Top = 20
-      Width = 284
-      Height = 200
+      Width = 228
+      Height = 182
       Align = alClient
       ItemHeight = 15
       TabOrder = 0
+      ExplicitWidth = 284
       ExplicitHeight = 186
     end
   end
   object gb_ack: TGroupBox
     AlignWithMargins = True
-    Left = 536
-    Top = 3
-    Width = 249
-    Height = 225
+    Left = 568
+    Top = 50
+    Width = 235
+    Height = 207
     Align = alRight
     Caption = 'Acknowledge'
     TabOrder = 2
-    ExplicitLeft = 530
-    ExplicitHeight = 211
     object list_ack: TListView
       AlignWithMargins = True
       Left = 5
       Top = 20
-      Width = 239
-      Height = 200
+      Width = 225
+      Height = 182
       Align = alClient
       Columns = <
         item
@@ -106,14 +106,15 @@ object BROADCAST_F: TBROADCAST_F
         end>
       TabOrder = 0
       ViewStyle = vsReport
+      ExplicitWidth = 239
       ExplicitHeight = 186
     end
   end
   object qr_history: TGroupBox
     AlignWithMargins = True
     Left = 3
-    Top = 234
-    Width = 782
+    Top = 263
+    Width = 800
     Height = 141
     Align = alBottom
     Caption = 'Message history'
@@ -124,7 +125,7 @@ object BROADCAST_F: TBROADCAST_F
       AlignWithMargins = True
       Left = 5
       Top = 20
-      Width = 772
+      Width = 790
       Height = 116
       Align = alClient
       ScrollBars = ssVertical
@@ -135,8 +136,8 @@ object BROADCAST_F: TBROADCAST_F
   object sb1: TStatusBar
     AlignWithMargins = True
     Left = 3
-    Top = 381
-    Width = 782
+    Top = 410
+    Width = 800
     Height = 21
     Panels = <
       item
@@ -148,6 +149,22 @@ object BROADCAST_F: TBROADCAST_F
     ExplicitTop = 367
     ExplicitWidth = 776
   end
+  object p_title: TPanel
+    AlignWithMargins = True
+    Left = 3
+    Top = 3
+    Width = 800
+    Height = 41
+    Align = alTop
+    Caption = 'Broadcast channel'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -21
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 5
+  end
   object q_get_aero_with_bb: TFDQuery
     Connection = PRINCIPALE.cn1
     SQL.Strings = (
@@ -158,8 +175,8 @@ object BROADCAST_F: TBROADCAST_F
       '    FROM ETL.ETL_MQTT_MESSAGE'
       '    WHERE ETL.ETL_MQTT_MESSAGE.MARCHE = ANA.ANAAERO.MARCHE'
       ');')
-    Left = 40
-    Top = 32
+    Left = 104
+    Top = 104
   end
   object q_get_history_message: TFDQuery
     Connection = PRINCIPALE.cn1
@@ -172,8 +189,8 @@ object BROADCAST_F: TBROADCAST_F
       'AND YEAR(DATETIME_MESSAGE) = :YEAR'
       'AND MQTT_CHANNEL  = '#39'B'#39
       'ORDER BY DATETIME_MESSAGE;')
-    Left = 640
-    Top = 256
+    Left = 88
+    Top = 320
     ParamData = <
       item
         Name = 'DAY'

@@ -1712,7 +1712,6 @@ begin
     end;
   }
 
-  /// ///////////
   RESET_ALARM;
   REP_OR_CHART := 'REPLAY';
   FLIGHT_SELECT_F.bt_replay_or_chart.Caption := '&Replay';
@@ -1743,87 +1742,92 @@ begin
   pb1.Position := 0;
   play_or_pause := 'PAUSE';
   application.ProcessMessages;
-  if FLIGHT_SELECT_F.q_select.RecordCount > 0 then
+
+  if CLICK_FOR_REPLAY then
   begin
-    AFTER_REPLAY;
-    rg_vcr.Visible := true;
-    rg_vcr.Top := 429;
-    rg_vcr.Left := 239;
-
-    bt_cursor.Enabled := true;
-
-    pb1.Max := FLIGHT_SELECT_F.q_select.RecordCount;
-
-    // decode messages
-
-    while not FLIGHT_SELECT_F.q_select.Eof do
+    if (FLIGHT_SELECT_F.q_select.RecordCount > 0) then
     begin
-      if play_or_pause = 'PLAY' then
+      AFTER_REPLAY;
+      rg_vcr.Visible := true;
+      rg_vcr.Top := 429;
+      rg_vcr.Left := 239;
+
+      bt_cursor.Enabled := true;
+
+      pb1.Max := FLIGHT_SELECT_F.q_select.RecordCount;
+
+      // decode messages
+
+      while not FLIGHT_SELECT_F.q_select.Eof do
       begin
-
-        date_X := (FLIGHT_SELECT_F.q_select['DATETIME_MESSAGE']);
-        time_x := (FLIGHT_SELECT_F.q_select['DATETIME_MESSAGE']);
-        LastRow := 9;
-        LastCol := 2;
-        SG.Cells[1, 9] := datetostr(date_X);
-        SG.Cells[2, 9] := timetostr(time_x);
-        datetime_x := FLIGHT_SELECT_F.q_select['DATETIME_MESSAGE'];
-        if FLIGHT_SELECT_F.q_select['payload_alfa'] <> 'NOT-VALID' then
-        begin
-          ss1 := etopic.Text + '/' +
-            trim(FLIGHT_SELECT_F.q_select['MQTT_CHANNEL']);
-          ss2 := '';
-          if (FLIGHT_SELECT_F.q_select['MQTT_CHANNEL'] = 'N') then
-            ss2 := FLIGHT_SELECT_F.q_select['MQTT_SUBTOPIC'];
-          ss2 := ss2 + (FLIGHT_SELECT_F.q_select['payload_alfa']);
-          // showmessage(ss1 + ' ' + ss2);
-          Decode(ss1, ss2);
-        end;
-        if FLIGHT_SELECT_F.q_select['FLAG_Z'] = '1' then
-        begin
-          SG.Cells[1, 14] := 'YES';
-          box_connected := true;
-
-        end
-        else
-        begin
-          SG.Cells[1, 14] := 'NO';
-          box_connected := false;
-          signal_strength('0');
-
-        end;
-
-        if (box_connected) then
-          old_box_connected := '1'
-        else
-          old_box_connected := '0';
-
-        pb1.Position := FLIGHT_SELECT_F.q_select.RecNo;
-        application.ProcessMessages;
-
         if play_or_pause = 'PLAY' then
         begin
-          Sleep(ddelay);
-          FLIGHT_SELECT_F.q_select.Next;
 
-        end;
+          date_X := (FLIGHT_SELECT_F.q_select['DATETIME_MESSAGE']);
+          time_x := (FLIGHT_SELECT_F.q_select['DATETIME_MESSAGE']);
+          LastRow := 9;
+          LastCol := 2;
+          SG.Cells[1, 9] := datetostr(date_X);
+          SG.Cells[2, 9] := timetostr(time_x);
+          datetime_x := FLIGHT_SELECT_F.q_select['DATETIME_MESSAGE'];
+          if FLIGHT_SELECT_F.q_select['payload_alfa'] <> 'NOT-VALID' then
+          begin
+            ss1 := etopic.Text + '/' +
+              trim(FLIGHT_SELECT_F.q_select['MQTT_CHANNEL']);
+            ss2 := '';
+            if (FLIGHT_SELECT_F.q_select['MQTT_CHANNEL'] = 'N') then
+              ss2 := FLIGHT_SELECT_F.q_select['MQTT_SUBTOPIC'];
+            ss2 := ss2 + (FLIGHT_SELECT_F.q_select['payload_alfa']);
+            // showmessage(ss1 + ' ' + ss2);
+            Decode(ss1, ss2);
+          end;
+          if FLIGHT_SELECT_F.q_select['FLAG_Z'] = '1' then
+          begin
+            SG.Cells[1, 14] := 'YES';
+            box_connected := true;
 
-        // ShowMessage('END CICLO');
-      end
-      else
-        application.ProcessMessages;
-    end;
-    FLIGHT_SELECT_F.q_select.close;
-    DlgI('Flight replay terminated');
-    pb1.Position := 0;
-    bt_cursor.Enabled := false;
-    rg_vcr.Visible := false;
-    AFTER_DISCONNECT;
+          end
+          else
+          begin
+            SG.Cells[1, 14] := 'NO';
+            box_connected := false;
+            signal_strength('0');
 
-  end
-  else
-    DlgW2('No Telemery data found',
-      'The flight selected does not have any telemetry data recorded!');
+          end;
+
+          if (box_connected) then
+            old_box_connected := '1'
+          else
+            old_box_connected := '0';
+
+          pb1.Position := FLIGHT_SELECT_F.q_select.RecNo;
+          application.ProcessMessages;
+
+          if play_or_pause = 'PLAY' then
+          begin
+            Sleep(ddelay);
+            FLIGHT_SELECT_F.q_select.Next;
+
+          end;
+
+          // ShowMessage('END CICLO');
+        end
+        else
+          application.ProcessMessages;
+      end;
+      FLIGHT_SELECT_F.q_select.close;
+      DlgI('Flight replay terminated');
+      pb1.Position := 0;
+      bt_cursor.Enabled := false;
+      rg_vcr.Visible := false;
+      AFTER_DISCONNECT;
+
+    end
+    else
+      DlgW2('No Telemery data found',
+        'The flight selected does not have any telemetry data recorded!');
+
+  end;
 
 end;
 
@@ -1956,8 +1960,11 @@ begin
 
   end
   else
+  begin
+    FLIGHT_SELECT_F.q_select.close;
     DlgW2('No Telemery data found',
       'The flight selected does not have any telemetry data recorded!');
+  end;
 
 end;
 
@@ -2076,7 +2083,7 @@ begin
   cont_for_land := 0;
   first_ele_minor := 0;
   takeoff_past := false;
-  landing_past := false;
+  landing_past := true;
 
   // crea la ProgressBar
   pb2 := TProgressBar.Create(Self);
@@ -2418,12 +2425,21 @@ end;
 procedure TPRINCIPALE.tb_delayChange(Sender: TObject);
 begin
 
-  if tb_delay.Position <= 5 then
+  // if tb_delay.Position <= 5 then
+  // ddelay := tb_delay.Position * 20
+  // else if (tb_delay.Position > 5) and (tb_delay.Position < 10) then
+  // ddelay := tb_delay.Position * 100 - 400
+  // else if tb_delay.Position = 10 then
+  // ddelay := 1000;
+
+  if tb_delay.Position > 5 then
     ddelay := tb_delay.Position * 20
-  else if (tb_delay.Position > 5) and (tb_delay.Position < 10) then
+  else if (tb_delay.Position <= 5) and (tb_delay.Position > 1) then
     ddelay := tb_delay.Position * 100 - 400
-  else if tb_delay.Position = 10 then
+  else if tb_delay.Position = 1 then
     ddelay := 1000;
+
+  application.ProcessMessages;
 
 end;
 

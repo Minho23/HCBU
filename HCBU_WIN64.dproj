@@ -158,6 +158,10 @@
             <Form>BROADCAST_F</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="SEARCH_FLIGHT_U.pas">
+            <Form>SEARCH_FLIGHT_F</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
