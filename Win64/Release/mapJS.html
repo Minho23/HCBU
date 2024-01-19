@@ -91,10 +91,14 @@
         }
 
         #cleanButton {
-            top: 150px;
+            top: 90px;
         }
 
         #hideLegendButton {
+            top: 150px;
+        }
+
+        #mapViewButton {
             top: 210px;
         }
     </style>
@@ -121,6 +125,11 @@
 
         <a id="hideLegendButton" class="button_map" title="Hide the legend" download target="_blank">
             <img src="hide_legend.png" width="30" height="22">
+
+        </a>
+
+        <a id="mapViewButton" class="button_map" title="Change Map View" download target="_blank">
+            <img src="sat_icon.png" width="30" height="22">
 
         </a>
 
@@ -156,7 +165,9 @@
         var button = document.getElementById('downloadButton');
         var button2 = document.getElementById('cleanButton');
         var gpx = '<?xml version="1.0" encoding="UTF-8"?>' + '<gpx version="1.1">' + '<trk><trkseg>'
-        var legend_isHidden = 0;
+        var legend_isHidden = 1;
+
+        var click_on_bt_view = 0
 
         //BUTTON EVENT
 
@@ -179,14 +190,29 @@
 
         }, false);
 
+        document.getElementById("mapViewButton").addEventListener("click", function () {
+            ChangeView();
+
+        }, false);
+
 
         //MAPPA
 
         map = L.map('map').setView([base_lat, base_long], ZOOM_DEFAULT);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+
+        var tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        })
+
+        var googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         }).addTo(map);
+
+        // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        //     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        // }).addTo(map);
 
         aereo = L.icon({
             iconUrl: 'aereo_online.png',
@@ -220,7 +246,7 @@
             return div;
         };
 
-        legend.addTo(map);
+        //legend.addTo(map);
 
 
         //FUNCTIONS
@@ -229,7 +255,7 @@
         //POPOLA FILE GPX
 
         function hideLegend() {
-            legend.remove(map)
+            //legend.remove(map)
             if (legend_isHidden == 1) {
                 legend.addTo(map)
                 legend_isHidden = 0;
@@ -419,6 +445,21 @@
 
             marker.setRotationAngle(angle)
 
+        }
+
+        //SATELLITE VIEW
+        function ChangeView() {
+
+            if (click_on_bt_view == 0) {
+                tiles.addTo(map)
+                googleSat.remove()
+                click_on_bt_view = 1
+            }
+            else {
+                googleSat.addTo(map)
+                tiles.remove()
+                click_on_bt_view = 0
+            }
         }
 
 

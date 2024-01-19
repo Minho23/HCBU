@@ -41,7 +41,7 @@ object SEARCH_FLIGHT_F: TSEARCH_FLIGHT_F
     Align = alTop
     Caption = 'Select Flight Date'
     TabOrder = 1
-    ExplicitLeft = -2
+    ExplicitWidth = 618
     object l_aero: TLabel
       AlignWithMargins = True
       Left = 144
@@ -118,7 +118,7 @@ object SEARCH_FLIGHT_F: TSEARCH_FLIGHT_F
           FieldName = 'min_datetime'
           Title.Alignment = taCenter
           Title.Caption = 'TAKEOFF'
-          Width = 289
+          Width = 288
           Visible = True
         end
         item
@@ -126,7 +126,7 @@ object SEARCH_FLIGHT_F: TSEARCH_FLIGHT_F
           FieldName = 'max_datetime'
           Title.Alignment = taCenter
           Title.Caption = 'LANDING'
-          Width = 289
+          Width = 288
           Visible = True
         end>
     end
@@ -166,8 +166,8 @@ object SEARCH_FLIGHT_F: TSEARCH_FLIGHT_F
       'WHERE DATA_FLIGHT = 1'
       'GROUP BY diff'
       'ORDER BY min_datetime DESC;')
-    Left = 123
-    Top = 282
+    Left = 147
+    Top = 274
     ParamData = <
       item
         Name = 'MARCA_P'

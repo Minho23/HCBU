@@ -162,6 +162,10 @@
             <Form>SEARCH_FLIGHT_F</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="ANAAERO_U.pas">
+            <Form>ANAAERO_F</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

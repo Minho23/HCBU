@@ -19,6 +19,7 @@ uses
 
 function GetRegistryValue(KeyName: string): string;
 procedure connect_mqtt;
+procedure refresh_aero_list;
 
 type
   TPRINCIPALE = class(TForm)
@@ -68,6 +69,8 @@ type
     IdHTTP1: TIdHTTP;
     N3: TMenuItem;
     BROADCASTCHANNEL1: TMenuItem;
+    fod1: TFileOpenDialog;
+    q_aero_only_hcbu: TFDQuery;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure sb1DrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel;
@@ -94,6 +97,7 @@ type
     procedure bt_cursorClick(Sender: TObject);
     procedure bt_update_connClick(Sender: TObject);
     procedure BROADCASTCHANNEL1Click(Sender: TObject);
+    procedure ListALarmEvent1Click(Sender: TObject);
 
   private
   var
@@ -239,7 +243,9 @@ var // EDIT DANIELE
   first_ele_minor: Integer;
   takeoff_past, landing_past: bool;
   ias_kts_int: Integer;
+  // Che tipo di connessione mqtt? Da main o form broadcast?
   TYPE_OF_CONNECTION: Integer;
+  ONLY_HCBU: Boolean;
 
 const // EDIT DANIELE
 
@@ -250,9 +256,40 @@ const // EDIT DANIELE
 
 implementation
 
-uses login_u, FLIGHT_SELECT_U, CHART_U, SPLASH_U, BROADCAST_U;
+uses login_u, FLIGHT_SELECT_U, CHART_U, SPLASH_U, BROADCAST_U, ANAAERO_U;
 
 {$R *.dfm}
+
+procedure refresh_aero_list;
+begin
+  with PRINCIPALE do
+  begin
+    etopic.Items.Clear;
+
+    if not ONLY_HCBU then
+    begin
+
+      q_read_aero.refresh();
+      while not q_read_aero.Eof do
+      begin
+        etopic.Items.add(q_read_aero['MARCHE']);
+        q_read_aero.Next;
+      end;
+
+    end
+    else
+    begin
+
+      q_aero_only_hcbu.refresh();
+      while not q_aero_only_hcbu.Eof do
+      begin
+        etopic.Items.add(q_aero_only_hcbu['MARCHE']);
+        q_aero_only_hcbu.Next;
+      end;
+
+    end;
+  end;
+end;
 
 procedure connect_mqtt;
 var
@@ -2064,6 +2101,9 @@ begin
 end;
 
 procedure TPRINCIPALE.FormCreate(Sender: TObject);
+var
+  t: TextFile;
+  s: String;
 
 begin
   pp := ExtractFilePath(ParamStr(0));
@@ -2094,7 +2134,34 @@ begin
   pb2.Align := alTop;
   pb2.Visible := false;
 
+  // Tipo di connessione = 0 -> ancora non connessi al mqtt
   TYPE_OF_CONNECTION := 0;
+
+  // LETTURA FILE PER CAPIRE SE THE MANAGER PRESENTE O NO
+  // fod1.Execute();
+  AssignFile(t, fod1.FileName);
+  reset(t);
+
+  ONLY_HCBU := false;
+  while not Eof(t) do
+  begin
+    readln(t, s);
+    if copy(s, 1, 10) = 'TheManager' then
+    begin
+
+      // ShowMessage(copy(s, 12));
+
+      if (copy(s, 12)) = 'Yes' then
+        ONLY_HCBU := false
+      else
+        ONLY_HCBU := true;
+
+      break;
+    end;
+
+  end;
+
+  closefile(t);
 
 end;
 
@@ -2136,13 +2203,51 @@ begin
 
     cn1.connected := true;
 
-    q_read_aero.open();
+
+    // ________________________________________________________________________
+
+
+    // GET DETTAGLI MARCHE
+
     PRINCIPALE.etopic.Items.Clear;
-    while not q_read_aero.Eof do
+
+    if not ONLY_HCBU then
     begin
-      PRINCIPALE.etopic.Items.add(q_read_aero['MARCHE']);
-      q_read_aero.Next;
+
+      // USO DELLE ANAGRAFICHE DI THE MANAGER
+      MainMenu1.Items[0].Enabled := false;
+
+      q_read_aero.open();
+      while not q_read_aero.Eof do
+      begin
+        PRINCIPALE.etopic.Items.add(q_read_aero['MARCHE']);
+        q_read_aero.Next;
+      end;
+
+      q_read_aero.close();
+    end
+    else
+    begin
+
+      // USO DELLE ANAGRAFICHE DI THE HCBU
+      MainMenu1.Items[0].Enabled := true;
+
+      q_aero_only_hcbu.open();
+      while not q_aero_only_hcbu.Eof do
+      begin
+        PRINCIPALE.etopic.Items.add(q_aero_only_hcbu['MARCHE']);
+        q_aero_only_hcbu.Next;
+      end;
+
+      q_aero_only_hcbu.close();
+
     end;
+
+
+
+
+
+    // _____________________________________________________________________________
 
     /// CANALE W
     with SG do
@@ -2205,6 +2310,11 @@ begin
   begin
 
   end;
+end;
+
+procedure TPRINCIPALE.ListALarmEvent1Click(Sender: TObject);
+begin
+  ANAAERO_F.ShowModal();
 end;
 
 procedure TPRINCIPALE.mqcConnectedStatusChanged(ASender: TObject;

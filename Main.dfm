@@ -1152,10 +1152,11 @@ object PRINCIPALE: TPRINCIPALE
     Top = 432
   end
   object MainMenu1: TMainMenu
-    Left = 786
-    Top = 563
+    Left = 762
+    Top = 587
     object ListALarmEvent1: TMenuItem
       Caption = '&Manage aircraft'
+      OnClick = ListALarmEvent1Click
     end
     object N1: TMenuItem
       Caption = '-'
@@ -1183,8 +1184,8 @@ object PRINCIPALE: TPRINCIPALE
       'SELECT *'
       'FROM BASE.BOX_ALARM'
       'WHERE MARCHE=:MARCHE')
-    Left = 840
-    Top = 568
+    Left = 816
+    Top = 584
     ParamData = <
       item
         Name = 'MARCHE'
@@ -1240,5 +1241,21 @@ object PRINCIPALE: TPRINCIPALE
     HTTPOptions = [hoForceEncodeParams]
     Left = 128
     Top = 432
+  end
+  object fod1: TFileOpenDialog
+    FavoriteLinks = <>
+    FileName = 'fdConnectionDefs.INI'
+    FileTypes = <>
+    Options = []
+    Left = 456
+    Top = 40
+  end
+  object q_aero_only_hcbu: TFDQuery
+    Connection = cn1
+    SQL.Strings = (
+      'SELECT MARCHE,DESCRIZIONE'
+      'FROM ETL.ANAAERO')
+    Left = 536
+    Top = 40
   end
 end
