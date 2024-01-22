@@ -61,13 +61,11 @@ type
     MainMenu1: TMainMenu;
     ListALarmEvent1: TMenuItem;
     ManageAlarmParameters1: TMenuItem;
-    Abput1: TMenuItem;
     q_get_alarms: TFDQuery;
     bt_update_conn: TBitBtn;
     N1: TMenuItem;
     N2: TMenuItem;
     IdHTTP1: TIdHTTP;
-    N3: TMenuItem;
     BROADCASTCHANNEL1: TMenuItem;
     fod1: TFileOpenDialog;
     q_aero_only_hcbu: TFDQuery;
@@ -98,6 +96,9 @@ type
     procedure bt_update_connClick(Sender: TObject);
     procedure BROADCASTCHANNEL1Click(Sender: TObject);
     procedure ListALarmEvent1Click(Sender: TObject);
+    procedure ManageAlarmParameters1Click(Sender: TObject);
+    procedure memo_sendKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
 
   private
   var
@@ -256,7 +257,8 @@ const // EDIT DANIELE
 
 implementation
 
-uses login_u, FLIGHT_SELECT_U, CHART_U, SPLASH_U, BROADCAST_U, ANAAERO_U;
+uses login_u, FLIGHT_SELECT_U, CHART_U, SPLASH_U, BROADCAST_U, ANAAERO_U,
+  ANAALARM_U;
 
 {$R *.dfm}
 
@@ -265,6 +267,7 @@ begin
   with PRINCIPALE do
   begin
     etopic.Items.Clear;
+    ANAALARM_F.cbe_registrations.Items.Clear;
 
     if not ONLY_HCBU then
     begin
@@ -284,6 +287,7 @@ begin
       while not q_aero_only_hcbu.Eof do
       begin
         etopic.Items.add(q_aero_only_hcbu['MARCHE']);
+        ANAALARM_F.cbe_registrations.Items.add(q_aero_only_hcbu['MARCHE']);
         q_aero_only_hcbu.Next;
       end;
 
@@ -2111,9 +2115,10 @@ begin
   FScriptGate2 := TScriptGate.Create(Self, wb2, 'intuos2');
   FScriptGate3 := TScriptGate.Create(Self, wb3, 'intuos3');
 
-  wb1.Navigate(ExtractFilePath(ParamStr(0)) + 'mapJS.html');
-  wb2.Navigate(ExtractFilePath(ParamStr(0)) + 'sixPack0.2/sixPack0.2.html');
-  wb3.Navigate(ExtractFilePath(ParamStr(0)) + 'gauge/hcbu/wb3.html');
+  wb1.Navigate(ExtractFilePath(ParamStr(0)) + 'tweb/mapJS.html');
+  wb2.Navigate(ExtractFilePath(ParamStr(0)) +
+    'tweb/sixPack0.2/sixPack0.2.html');
+  wb3.Navigate(ExtractFilePath(ParamStr(0)) + 'tweb/gauge/hcbu/wb3.html');
 
   vsi_index := 0;
   eclient_id := '1to1';
@@ -2210,17 +2215,20 @@ begin
     // GET DETTAGLI MARCHE
 
     PRINCIPALE.etopic.Items.Clear;
+    ANAALARM_F.cbe_registrations.Items.Clear;
 
     if not ONLY_HCBU then
     begin
 
       // USO DELLE ANAGRAFICHE DI THE MANAGER
       MainMenu1.Items[0].Enabled := false;
+      MainMenu1.Items[2].Enabled := false;
 
       q_read_aero.open();
       while not q_read_aero.Eof do
       begin
         PRINCIPALE.etopic.Items.add(q_read_aero['MARCHE']);
+
         q_read_aero.Next;
       end;
 
@@ -2231,11 +2239,13 @@ begin
 
       // USO DELLE ANAGRAFICHE DI THE HCBU
       MainMenu1.Items[0].Enabled := true;
+      MainMenu1.Items[2].Enabled := true;
 
       q_aero_only_hcbu.open();
       while not q_aero_only_hcbu.Eof do
       begin
         PRINCIPALE.etopic.Items.add(q_aero_only_hcbu['MARCHE']);
+        ANAALARM_F.cbe_registrations.Items.add(q_aero_only_hcbu['MARCHE']);
         q_aero_only_hcbu.Next;
       end;
 
@@ -2315,6 +2325,30 @@ end;
 procedure TPRINCIPALE.ListALarmEvent1Click(Sender: TObject);
 begin
   ANAAERO_F.ShowModal();
+end;
+
+procedure TPRINCIPALE.ManageAlarmParameters1Click(Sender: TObject);
+begin
+  ANAALARM_F.ShowModal;
+end;
+
+procedure TPRINCIPALE.memo_sendKeyDown(Sender: TObject; var Key: Word;
+Shift: TShiftState);
+begin
+  // Se è premuto solo il tasto Invio (senza Shift)
+  if (Key = VK_RETURN) and not(ssShift in Shift) then
+  begin
+    // Chiama la procedura desiderata
+    PRINCIPALE.bt_sendClick(Sender);
+
+    // Impedisce al campo memo di inserire una nuova riga
+    Key := 0;
+  end
+  // Se è premuto il tasto Invio insieme al tasto Shift
+  else if (Key = VK_RETURN) and (ssShift in Shift) then
+  begin
+    // Lascia che il campo memo vada a capo normalmente
+  end;
 end;
 
 procedure TPRINCIPALE.mqcConnectedStatusChanged(ASender: TObject;
@@ -2535,19 +2569,19 @@ end;
 procedure TPRINCIPALE.tb_delayChange(Sender: TObject);
 begin
 
-  // if tb_delay.Position <= 5 then
-  // ddelay := tb_delay.Position * 20
-  // else if (tb_delay.Position > 5) and (tb_delay.Position < 10) then
-  // ddelay := tb_delay.Position * 100 - 400
-  // else if tb_delay.Position = 10 then
-  // ddelay := 1000;
-
-  if tb_delay.Position > 5 then
+  if tb_delay.Position <= 5 then
     ddelay := tb_delay.Position * 20
-  else if (tb_delay.Position <= 5) and (tb_delay.Position > 1) then
+  else if (tb_delay.Position > 5) and (tb_delay.Position < 10) then
     ddelay := tb_delay.Position * 100 - 400
-  else if tb_delay.Position = 1 then
+  else if tb_delay.Position = 10 then
     ddelay := 1000;
+
+  // if tb_delay.Position > 5 then
+  // ddelay := tb_delay.Position * 20
+  // else if (tb_delay.Position <= 5) and (tb_delay.Position > 1) then
+  // ddelay := tb_delay.Position * 100 - 400
+  // else if tb_delay.Position = 1 then
+  // ddelay := 1000;
 
   application.ProcessMessages;
 

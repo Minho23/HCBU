@@ -11,7 +11,8 @@ uses
   SPLASH_U in 'SPLASH_U.pas' {SPLASH_F},
   BROADCAST_U in 'BROADCAST_U.pas' {BROADCAST_F},
   SEARCH_FLIGHT_U in 'SEARCH_FLIGHT_U.pas' {SEARCH_FLIGHT_F},
-  ANAAERO_U in 'ANAAERO_U.pas' {ANAAERO_F};
+  ANAAERO_U in 'ANAAERO_U.pas' {ANAAERO_F},
+  ANAALARM_U in 'ANAALARM_U.pas' {ANAALARM_F};
 
 {$R *.res}
 
@@ -36,6 +37,7 @@ begin
   Application.CreateForm(TBROADCAST_F, BROADCAST_F);
   Application.CreateForm(TSEARCH_FLIGHT_F, SEARCH_FLIGHT_F);
   Application.CreateForm(TANAAERO_F, ANAAERO_F);
+  Application.CreateForm(TANAALARM_F, ANAALARM_F);
   PRINCIPALE.AlphaBlend := True;
     PRINCIPALE.AlphaBlendValue := 0;
     Application.ProcessMessages;

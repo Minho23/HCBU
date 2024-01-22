@@ -166,6 +166,10 @@
             <Form>ANAAERO_F</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="ANAALARM_U.pas">
+            <Form>ANAALARM_F</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

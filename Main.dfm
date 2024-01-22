@@ -224,7 +224,7 @@ object PRINCIPALE: TPRINCIPALE
   object memo_send: TMemo
     AlignWithMargins = True
     Left = 24
-    Top = 586
+    Top = 581
     Width = 267
     Height = 42
     Anchors = [akLeft, akBottom]
@@ -236,7 +236,7 @@ object PRINCIPALE: TPRINCIPALE
     ParentFont = False
     ScrollBars = ssVertical
     TabOrder = 1
-    ExplicitTop = 582
+    OnKeyDown = memo_sendKeyDown
   end
   object bt_send: TBitBtn
     AlignWithMargins = True
@@ -305,8 +305,6 @@ object PRINCIPALE: TPRINCIPALE
         Width = 200
       end>
     OnDrawPanel = sb1DrawPanel
-    ExplicitTop = 690
-    ExplicitWidth = 1157
   end
   object r: TrMemoEx
     AlignWithMargins = True
@@ -1163,6 +1161,7 @@ object PRINCIPALE: TPRINCIPALE
     end
     object ManageAlarmParameters1: TMenuItem
       Caption = '&Manage Alarm Parameters'
+      OnClick = ManageAlarmParameters1Click
     end
     object N2: TMenuItem
       Caption = '-'
@@ -1170,12 +1169,6 @@ object PRINCIPALE: TPRINCIPALE
     object BROADCASTCHANNEL1: TMenuItem
       Caption = 'Broadcast channel'
       OnClick = BROADCASTCHANNEL1Click
-    end
-    object N3: TMenuItem
-      Caption = '-'
-    end
-    object Abput1: TMenuItem
-      Caption = 'About'
     end
   end
   object q_get_alarms: TFDQuery

@@ -29,9 +29,7 @@ object ANAAERO_F: TANAAERO_F
     Font.Style = []
     ParentFont = False
     TabOrder = 0
-    ExplicitLeft = 0
-    ExplicitTop = 0
-    ExplicitWidth = 977
+    ExplicitWidth = 899
   end
   object grb_aircraft: TGroupBox
     AlignWithMargins = True
@@ -42,9 +40,7 @@ object ANAAERO_F: TANAAERO_F
     Align = alLeft
     Caption = 'Aircraft list'
     TabOrder = 1
-    ExplicitLeft = 0
-    ExplicitTop = 41
-    ExplicitHeight = 505
+    ExplicitHeight = 387
     object rDBGrid1: TrDBGrid
       AlignWithMargins = True
       Left = 5
@@ -90,10 +86,8 @@ object ANAAERO_F: TANAAERO_F
     Align = alClient
     Caption = 'Aircraft details'
     TabOrder = 2
-    ExplicitLeft = 536
-    ExplicitTop = 352
-    ExplicitWidth = 185
-    ExplicitHeight = 105
+    ExplicitWidth = 436
+    ExplicitHeight = 387
     object l_reg: TLabel
       Left = 120
       Top = 68
@@ -133,14 +127,14 @@ object ANAAERO_F: TANAAERO_F
       Left = 114
       Top = 89
       Width = 183
-      Height = 32
+      Height = 23
       TabOrder = 1
     end
     object e_desc: TEdit
       Left = 114
       Top = 161
       Width = 185
-      Height = 56
+      Height = 23
       TabOrder = 2
     end
     object bb_update: TBitBtn
