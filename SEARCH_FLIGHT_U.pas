@@ -47,7 +47,6 @@ uses
 procedure TSEARCH_FLIGHT_F.bt_searchClick(Sender: TObject);
 var
   selectedDate: TDate;
-  day: Word;
 begin
 
   selectedDate := dp1.Date;

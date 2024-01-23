@@ -24,10 +24,8 @@ object BROADCAST_F: TBROADCAST_F
     Align = alClient
     Caption = 'Broadcast message'
     TabOrder = 0
-    ExplicitLeft = 303
-    ExplicitTop = 3
-    ExplicitWidth = 221
-    ExplicitHeight = 211
+    ExplicitWidth = 309
+    ExplicitHeight = 193
     object sbt_connect: TSpeedButton
       AlignWithMargins = True
       Left = 118
@@ -65,6 +63,7 @@ object BROADCAST_F: TBROADCAST_F
     Align = alLeft
     Caption = 'Registrations'
     TabOrder = 1
+    ExplicitHeight = 193
     object clb_aircraft: TCheckListBox
       AlignWithMargins = True
       Left = 5
@@ -74,8 +73,7 @@ object BROADCAST_F: TBROADCAST_F
       Align = alClient
       ItemHeight = 15
       TabOrder = 0
-      ExplicitWidth = 284
-      ExplicitHeight = 186
+      ExplicitHeight = 168
     end
   end
   object gb_ack: TGroupBox
@@ -87,6 +85,8 @@ object BROADCAST_F: TBROADCAST_F
     Align = alRight
     Caption = 'Acknowledge'
     TabOrder = 2
+    ExplicitLeft = 562
+    ExplicitHeight = 193
     object list_ack: TListView
       AlignWithMargins = True
       Left = 5
@@ -106,8 +106,7 @@ object BROADCAST_F: TBROADCAST_F
         end>
       TabOrder = 0
       ViewStyle = vsReport
-      ExplicitWidth = 239
-      ExplicitHeight = 186
+      ExplicitHeight = 168
     end
   end
   object qr_history: TGroupBox
@@ -119,8 +118,8 @@ object BROADCAST_F: TBROADCAST_F
     Align = alBottom
     Caption = 'Message history'
     TabOrder = 3
-    ExplicitTop = 220
-    ExplicitWidth = 776
+    ExplicitTop = 249
+    ExplicitWidth = 794
     object m_history: TMemo
       AlignWithMargins = True
       Left = 5
@@ -130,7 +129,7 @@ object BROADCAST_F: TBROADCAST_F
       Align = alClient
       ScrollBars = ssVertical
       TabOrder = 0
-      ExplicitWidth = 766
+      ExplicitWidth = 784
     end
   end
   object sb1: TStatusBar
@@ -146,8 +145,8 @@ object BROADCAST_F: TBROADCAST_F
         Width = 50
       end>
     OnDrawPanel = sb1DrawPanel
-    ExplicitTop = 367
-    ExplicitWidth = 776
+    ExplicitTop = 396
+    ExplicitWidth = 794
   end
   object p_title: TPanel
     AlignWithMargins = True
@@ -164,19 +163,7 @@ object BROADCAST_F: TBROADCAST_F
     Font.Style = []
     ParentFont = False
     TabOrder = 5
-  end
-  object q_get_aero_with_bb: TFDQuery
-    Connection = PRINCIPALE.cn1
-    SQL.Strings = (
-      'SELECT MARCHE'
-      'FROM ANA.ANAAERO'
-      'WHERE EXISTS ('
-      '    SELECT 1'
-      '    FROM ETL.ETL_MQTT_MESSAGE'
-      '    WHERE ETL.ETL_MQTT_MESSAGE.MARCHE = ANA.ANAAERO.MARCHE'
-      ');')
-    Left = 104
-    Top = 104
+    ExplicitWidth = 794
   end
   object q_get_history_message: TFDQuery
     Connection = PRINCIPALE.cn1

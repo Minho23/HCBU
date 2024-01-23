@@ -15,6 +15,7 @@ uses
 
 procedure check_mqtt();
 procedure decode_mqtt_msg(ATopic, msg: string);
+procedure AggiungiElemento(const MarcaAereo: string);
 
 type
   TBROADCAST_F = class(TForm)
@@ -23,7 +24,6 @@ type
     gb_ack: TGroupBox;
     clb_aircraft: TCheckListBox;
     bb_send_message: TBitBtn;
-    q_get_aero_with_bb: TFDQuery;
     list_ack: TListView;
     qr_history: TGroupBox;
     m_history: TMemo;
@@ -166,8 +166,8 @@ begin
     panelcolor_sb := clBlack;
     BROADCAST_F.sb1.Canvas.Font.Color := panelcolor_sb;
 
-    clb_aircraft.Items.Clear;
-    list_ack.Items.Clear;
+    // clb_aircraft.Items.Clear;
+    // list_ack.Items.Clear;
     e_message.Clear;
     m_history.Clear;
   end;
@@ -271,14 +271,14 @@ begin
   ClearAll;
   check_mqtt;
 
-  q_get_aero_with_bb.open();
-  while not q_get_aero_with_bb.Eof do
-  begin
-    clb_aircraft.Items.Add(q_get_aero_with_bb['MARCHE']);
-    AggiungiElemento(q_get_aero_with_bb['MARCHE']);
-    q_get_aero_with_bb.Next;
-  end;
-  q_get_aero_with_bb.close();
+  // q_get_aero_with_bb.open();
+  // while not q_get_aero_with_bb.Eof do
+  // begin
+  // clb_aircraft.Items.Add(q_get_aero_with_bb['MARCHE']);
+  // AggiungiElemento(q_get_aero_with_bb['MARCHE']);
+  // q_get_aero_with_bb.Next;
+  // end;
+  // q_get_aero_with_bb.close();
 
   DataOdiernaUTC := GetUTCNow;
 

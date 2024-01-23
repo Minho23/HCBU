@@ -56,7 +56,7 @@ object PRINCIPALE: TPRINCIPALE
     end
     object etopic: TrComboBoxEx
       Left = 16
-      Top = 37
+      Top = 44
       Width = 130
       Height = 24
       Font.Charset = DEFAULT_CHARSET
@@ -237,6 +237,7 @@ object PRINCIPALE: TPRINCIPALE
     ScrollBars = ssVertical
     TabOrder = 1
     OnKeyDown = memo_sendKeyDown
+    ExplicitTop = 577
   end
   object bt_send: TBitBtn
     AlignWithMargins = True
@@ -305,6 +306,8 @@ object PRINCIPALE: TPRINCIPALE
         Width = 200
       end>
     OnDrawPanel = sb1DrawPanel
+    ExplicitTop = 690
+    ExplicitWidth = 1157
   end
   object r: TrMemoEx
     AlignWithMargins = True
@@ -1177,7 +1180,7 @@ object PRINCIPALE: TPRINCIPALE
       'SELECT *'
       'FROM BASE.BOX_ALARM'
       'WHERE MARCHE=:MARCHE')
-    Left = 816
+    Left = 848
     Top = 584
     ParamData = <
       item
@@ -1249,6 +1252,35 @@ object PRINCIPALE: TPRINCIPALE
       'SELECT MARCHE,DESCRIZIONE'
       'FROM ETL.ANAAERO')
     Left = 536
+    Top = 40
+  end
+  object q_get_alarm_only_hcbu_with_marche: TFDQuery
+    Connection = cn1
+    SQL.Strings = (
+      'SELECT *'
+      'FROM ETL.BOX_ALARM'
+      'WHERE MARCHE=:MARCHE')
+    Left = 984
+    Top = 584
+    ParamData = <
+      item
+        Name = 'MARCHE'
+        DataType = ftString
+        ParamType = ptInput
+        Value = Null
+      end>
+  end
+  object q_get_aero_only_hcbu_mqtt: TFDQuery
+    Connection = cn1
+    SQL.Strings = (
+      'SELECT MARCHE'
+      'FROM ETL.ANAAERO'
+      'WHERE EXISTS ('
+      '    SELECT 1'
+      '    FROM ETL.ETL_MQTT_MESSAGE'
+      '    WHERE ETL.ETL_MQTT_MESSAGE.MARCHE = ETL.ANAAERO.MARCHE'
+      ');')
+    Left = 240
     Top = 40
   end
 end
