@@ -104,6 +104,7 @@ object BROADCAST_F: TBROADCAST_F
           AutoSize = True
           Caption = 'ACK'
         end>
+      Items.ItemData = {}
       TabOrder = 0
       ViewStyle = vsReport
       ExplicitHeight = 168
@@ -129,7 +130,6 @@ object BROADCAST_F: TBROADCAST_F
       Align = alClient
       ScrollBars = ssVertical
       TabOrder = 0
-      ExplicitWidth = 784
     end
   end
   object sb1: TStatusBar

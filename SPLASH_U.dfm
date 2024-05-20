@@ -12,9 +12,7 @@ object SPLASH_F: TSPLASH_F
   Font.Name = 'Tahoma'
   Font.Style = []
   FormStyle = fsStayOnTop
-  OldCreateOrder = False
   Position = poDefault
-  PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
