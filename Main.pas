@@ -172,7 +172,6 @@ var
   launcher_ok: bool;
 
   connected: string;
-  LastRow, LastCol: Integer;
 
 var
   VCC_MIN, VCC_MAX, ICC_MIN, ICC_MAX, TINT_MIN, TINT_MAX, GTOT_MIN, GTOT_MAX,
@@ -189,6 +188,7 @@ var
 const
   Komma: TFormatSettings = (DecimalSeparator: ',');
   Dot: TFormatSettings = (DecimalSeparator: '.');
+  // COLONNE
   vcc_col = 1;
   vcc_row = 1;
   icc_col = 2;
@@ -217,7 +217,7 @@ const
   gps_ft_row = 5;
   utc_date_col = 1;
   utc_date_row = 1; // 9;
-  utc_time_col = 1;
+  utc_time_col = 2;
   utc_time_row = 1;
   dbm_col = 1;
   dbm_row = 10;
@@ -785,7 +785,6 @@ procedure AZZERA_SG;
 var
   col, row: Integer;
 begin
-  LastRow := -1;
   with PRINCIPALE do
 
   begin
@@ -921,14 +920,9 @@ begin
       baro_msg := SplitString(m, ',');
       baro_alt_s := StringReplace(baro_msg[1], '.', ',', [rfReplaceAll]);
       appo_single := strtofloat(baro_alt_s); // * 3.28084;
-      SG.cells[1, 8] := inttostr(round(appo_single));
-      LastRow := 8;
-      LastCol := 1;
-
+      SG.cells[mbar_col, mbar_row] := inttostr(round(appo_single));
       baro_hpa_s := baro_msg[0];
-      SG.cells[1, 7] := baro_hpa_s;
-      LastRow := 7;
-      LastCol := 1;
+      // SG.cells[1, 7] := baro_hpa_s;
       baro_alt_s := h_x_baro_s; // altezza in metri preso dal altitude
       baro_hpa_s := StringReplace(baro_hpa_s, '.', ',', [rfReplaceAll]);
       appo_single := strtofloat(baro_hpa_s) + strtofloat(baro_alt_s) / 8.4;
@@ -979,9 +973,6 @@ begin
     end;
     appo_int := round(appo_single);
 
-    LastRow := 3;
-    LastCol := 1;
-
     if (appo_int >= -180) and (appo_int <= 0) then
     begin
       appo_int := abs(appo_int);
@@ -1005,7 +996,7 @@ begin
         gg := iResult;
         /// //////// principale.r.Lines.Append(gg);
       end);
-    SG.cells[2, 3] := inttostr(appo_int - 180);
+    SG.cells[hdg_col, hdg_row] := inttostr(appo_int - 180);
   end;
 end;
 
@@ -1033,13 +1024,6 @@ begin
 
     appo_int := -113 + (2 * appo_int);
     dbm := inttostr(appo_int);
-    SG.cells[1, 10] := '    ';
-    SG.cells[1, 10] := dbm;
-    LastRow := 10;
-    LastCol := 1;
-    SG.cells[2, 10] := signal;
-    LastRow := 10;
-    LastCol := 2;
     FScriptGate3.CallScript('GetSignal(' + signal + ',' + dbm + ')',
       procedure(const iResult: String)
       var
@@ -1063,10 +1047,10 @@ begin
     vcc_s := m;
 
     check_alarm(vcc_s, 0);
-    SG.cells[vcc_col, vcc_row] := vcc_s;
+    // SG.cells[vcc_col, vcc_row] := vcc_s;
     if vcc_alarm then
-      SG.cells[alarm_col, vcc_row] := vcc_s + 'V';
-    application.ProcessMessages;
+      // SG.cells[alarm_col, vcc_row] := vcc_s + 'V';
+      application.ProcessMessages;
     FScriptGate3.CallScript('GetVcc(' + vcc_s + ')',
       procedure(const iResult: String)
       var
@@ -1089,17 +1073,17 @@ begin
 
     ia_s := m;
     check_alarm(ia_s, 1);
-    SG.cells[icc_col, icc_row] := ia_s;
+    // SG.cells[icc_col, icc_row] := ia_s;
     if icc_alarm then
-      SG.cells[alarm_col, icc_row] := ia_s + 'mA';
-    FScriptGate3.CallScript('GetIa(' + ia_s + ')',
-      procedure(const iResult: String)
-      var
-        gg: string;
-      begin
-        gg := iResult;
+      // SG.cells[alarm_col, icc_row] := ia_s + 'mA';
+      FScriptGate3.CallScript('GetIa(' + ia_s + ')',
+        procedure(const iResult: String)
+        var
+          gg: string;
+        begin
+          gg := iResult;
 
-      end);
+        end);
 
   end;
 end;
@@ -1218,8 +1202,6 @@ begin
         if ias_alarm then
           PRINCIPALE.SG.cells[alarm_col, gs_row] := ias_kts;
 
-        LastRow := 5;
-        LastCol := 1;
         FScriptGate2.CallScript('GetIAS(' + ias_kts + ')',
           procedure(const iResult: String)
           var
@@ -1325,8 +1307,7 @@ begin
     if roll_alarm then
       PRINCIPALE.SG.cells[alarm_col, roll_row] := roll_s + ' Roll';
   end;
-  LastRow := 11;
-  LastCol := 2;
+
   if REP_OR_CHART = 'CHART' then
   begin
     Xc_roll[index_c_roll] := datetime_x;
@@ -1407,27 +1388,13 @@ begin
       g_min := g_tot;
 
     PRINCIPALE.SG.cells[2, gtot_row] := Formatfloat('0.0', g_min);
-    LastCol := 2;
-    LastRow := 4;
-    PRINCIPALE.SG.cells[3, gtot_row] := Formatfloat('0.0', g_max);
-    LastCol := 3;
-    LastRow := 4;
 
-    // PRINCIPALE.SG.cells[1, gacc_row] := Formatfloat('0.00', acc_x);
-    LastCol := 1;
-    LastRow := 12;
-    // PRINCIPALE.SG.cells[2, gacc_row] := Formatfloat('0.00', acc_y);
-    LastCol := 2;
-    LastRow := 12;
-    // PRINCIPALE.SG.cells[3, gacc_row] := Formatfloat('0.00', acc_z);
-    LastCol := 3;
-    LastRow := 12;
+    PRINCIPALE.SG.cells[3, gtot_row] := Formatfloat('0.0', g_max);
     application.ProcessMessages;
 
     check_alarm(floattostr(g_tot), 5);
     PRINCIPALE.SG.cells[gtot_col, gtot_row] := Formatfloat('0.0', g_tot);
-    LastCol := 1;
-    LastRow := 4;
+
     application.ProcessMessages;
   end
   else
@@ -1584,9 +1551,8 @@ begin
                     sb1.Panels[1].Text := ' Not Connected to the box';
                     panelcolor2 := clRed;
                     sb1.Panels[2].Text := ' Invalid GPS Data';
-                    SG.cells[1, 14] := 'NO';
-                    LastRow := 14;
-                    LastCol := 1;
+                    // SG.cells[1, 14] := 'NO';
+
                   end;
 
                 end;
@@ -1599,9 +1565,8 @@ begin
                     box_connected := true;
                     panelcolor1 := clGreen;
                     sb1.Panels[1].Text := 'Connected to the box';
-                    SG.cells[1, 14] := 'YES';
-                    LastRow := 14;
-                    LastCol := 1;
+                    // SG.cells[1, 14] := 'YES';
+
                   end;
                 end;
 
@@ -1726,7 +1691,7 @@ begin
             begin
               msg := copy(trim(msg), 1, 999);
               SG.cells[utc_date_col, utc_date_row] := copy(msg, 1, 10);
-              SG.cells[utc_time_col + 1, utc_time_row] := copy(msg, 12, 8);
+              SG.cells[utc_time_col, utc_time_row] := copy(msg, 12, 8);
 
             end;
 
@@ -1831,7 +1796,7 @@ begin
   RESET_ALARM;
   REP_OR_CHART := 'REPLAY';
   FLIGHT_SELECT_F.bt_replay_or_chart.Caption := '&Replay';
-  SG.cells[0, 14] := 'Connection';
+  // SG.cells[0, 14] := 'Connection';
   datetime_gps := now;
 
   if etopic.Text <> '' then
@@ -1883,10 +1848,8 @@ begin
 
           date_X := (FLIGHT_SELECT_F.q_select['DATETIME_MESSAGE']);
           time_x := (FLIGHT_SELECT_F.q_select['DATETIME_MESSAGE']);
-          LastRow := 9;
-          LastCol := 2;
-          SG.cells[1, 9] := datetostr(date_X);
-          SG.cells[2, 9] := timetostr(time_x);
+          SG.cells[utc_date_col, utc_date_row] := datetostr(date_X);
+          SG.cells[utc_time_col, utc_time_row] := timetostr(time_x);
           datetime_x := FLIGHT_SELECT_F.q_select['DATETIME_MESSAGE'];
           if FLIGHT_SELECT_F.q_select['payload_alfa'] <> 'NOT-VALID' then
           begin
@@ -1901,13 +1864,13 @@ begin
           end;
           if FLIGHT_SELECT_F.q_select['FLAG_Z'] = '1' then
           begin
-            SG.cells[1, 14] := 'YES';
+            // SG.cells[1, 14] := 'YES';
             box_connected := true;
 
           end
           else
           begin
-            SG.cells[1, 14] := 'NO';
+            // SG.cells[1, 14] := 'NO';
             box_connected := false;
             signal_strength('0');
 
@@ -1960,7 +1923,7 @@ procedure TPRINCIPALE.bt_chartClick(Sender: TObject);
 begin
   REP_OR_CHART := 'CHART';
   FLIGHT_SELECT_F.bt_replay_or_chart.Caption := 'C&hart';
-  SG.cells[0, 14] := '';
+  // SG.cells[0, 14] := '';
   datetime_gps := now;
   if etopic.Text <> '' then
   begin
@@ -2360,22 +2323,22 @@ begin
       ColWidths[2] := 60;
       ColWidths[3] := 40;
       ColWidths[4] := 100;
-      cells[0, vcc_row] := 'Vcc[V] / I[mA]';
+      cells[0, vcc_row] := 'Vcc [V] / I [mA]';
       cells[0, tint_row] := 'Tint[°C]';
-      cells[0, hdg_row] := 'Magn. Heading[deg]';
+      cells[0, hdg_row] := 'Magn. Heading [deg]';
       cells[0, gtot_row] := 'G acc. tot,min,max [G]';
       cells[0, gs_row] := 'GPS GS [Kts]';
       cells[0, vsi_row] := 'VSI[ft/min]';
-      cells[0, mbar_row] := 'Baro Pressure[mBar]';
+      cells[0, mbar_row] := 'Baro Pressure [mBar]';
       cells[0, baro_ft_row] := 'Baro / GPS Altitude [ft]';
       cells[0, utc_date_row] := 'UTC Timestamp';
       // cells[0, dbm_row] := 'GPRS Signal (dbm)';
       cells[0, pitch_row] := 'Pitch / Roll [Deg]';
       // cells[0, gacc_row] := 'G acc. x,y,z (G)';
-      cells[0, height_row] := 'Height[ft]';
+      cells[0, height_row] := 'Height [ft]';
       // cells[0, connected_row] := 'Connected';
       // cells[0, turnrate_row] := 'TurnRate (deg/sec) ';
-      cells[0, co_row] := 'Carbon Monoxide[ppm]';
+      cells[0, co_row] := 'Carbon Monoxide [ppm]';
       cells[0, take_land_row] := 'Take-off/Landing';
 
       // header
@@ -2575,20 +2538,20 @@ begin
       SG.Canvas.Font.Color := clRed // solo per la colonna allarmi
     else
       SG.Canvas.Font.Color := clBlack;
-    if (ACol = vcc_col) and (ARow = vcc_row) then
-    begin // Vcc
-      if vcc_alarm then
-        SG.Canvas.Font.Color := clRed
-      else
-        SG.Canvas.Font.Color := clBlue;
-    end;
-    if (ACol = icc_col) and (ARow = icc_row) then
-    begin // Icc
-      if icc_alarm then
-        SG.Canvas.Font.Color := clRed
-      else
-        SG.Canvas.Font.Color := clBlue;
-    end;
+    // if (ACol = vcc_col) and (ARow = vcc_row) then
+    // begin // Vcc
+    // if vcc_alarm then
+    // SG.Canvas.Font.Color := clRed
+    // else
+    // SG.Canvas.Font.Color := clBlue;
+    // end;
+    // if (ACol = icc_col) and (ARow = icc_row) then
+    // begin // Icc
+    // if icc_alarm then
+    // SG.Canvas.Font.Color := clRed
+    // else
+    // SG.Canvas.Font.Color := clBlue;
+    // end;
     if (ACol = gtot_col) and (ARow = gtot_row) then
     begin // Gtot
       if gtot_alarm then

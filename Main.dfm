@@ -306,8 +306,6 @@ object PRINCIPALE: TPRINCIPALE
         Width = 200
       end>
     OnDrawPanel = sb1DrawPanel
-    ExplicitTop = 695
-    ExplicitWidth = 1157
   end
   object r: TrMemoEx
     AlignWithMargins = True

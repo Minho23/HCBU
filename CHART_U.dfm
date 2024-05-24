@@ -1,12 +1,13 @@
 object CHART_F: TCHART_F
+  AlignWithMargins = True
   Left = 0
   Top = 0
-  Width = 1138
+  Width = 1143
   Height = 1100
-  HorzScrollBar.Range = 60
   VertScrollBar.ButtonSize = 10
-  VertScrollBar.Range = 10000
   VertScrollBar.Size = 4
+  AutoScroll = True
+  AutoSize = True
   Caption = 'HCBU - Chart'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -28,21 +29,25 @@ object CHART_F: TCHART_F
     OnClick = vsi_smoothedClick
   end
   object ScrollBox1: TScrollBox
-    Left = 0
-    Top = 0
-    Width = 1124
-    Height = 10000
+    AlignWithMargins = True
+    Left = 3
+    Top = 3
+    Width = 1123
+    Height = 1059
+    HorzScrollBar.ParentColor = False
+    VertScrollBar.Tracking = True
     Align = alClient
+    AutoScroll = False
+    AutoSize = True
     TabOrder = 1
-    ExplicitWidth = 1105
     DesignSize = (
-      1120
-      9996)
+      1119
+      1055)
     object gps_alt: TChart
-      Left = 80
-      Top = 284
-      Width = 967
-      Height = 258
+      Left = 91
+      Top = 293
+      Width = 937
+      Height = 226
       LeftWall.Picture.Data = {
         07544269746D6170B67F0000424DB67F00000000000036000000280000008000
         0000550000000100180000000000807F0000130B0000130B0000000000000000
@@ -1072,11 +1077,21 @@ object CHART_F: TCHART_F
       ScrollMouseButton = mbLeft
       Title.Text.Strings = (
         'Gps altitude (ft)        -           Terrain (ft)')
+      BottomAxis.Automatic = False
+      BottomAxis.AutomaticMaximum = False
+      BottomAxis.AutomaticMinimum = False
       BottomAxis.ExactDateTime = False
       BottomAxis.LabelsAngle = 45
       BottomAxis.LabelsMultiLine = True
       BottomAxis.LabelStyle = talPointValue
+      BottomAxis.Maximum = 104158.450820722400000000
+      BottomAxis.Minimum = -13264.450820722630000000
+      LeftAxis.Automatic = False
+      LeftAxis.AutomaticMaximum = False
+      LeftAxis.AutomaticMinimum = False
       LeftAxis.LabelsAlternate = True
+      LeftAxis.Maximum = 1339966.221847840000000000
+      LeftAxis.Minimum = -1338743.721847840000000000
       LeftAxis.TickLength = 10
       LeftAxis.Title.Caption = 'Alt (ft)'
       Panning.MouseWheel = pmwNone
@@ -1085,8 +1100,8 @@ object CHART_F: TCHART_F
       RightAxis.AutomaticMinimum = False
       RightAxis.Axis.Color = -1
       RightAxis.LabelsFormat.Font.Color = 8388863
-      RightAxis.Maximum = 927.500000000000000000
-      RightAxis.Minimum = 452.500000000000000000
+      RightAxis.Maximum = 1162687.464160228000000000
+      RightAxis.Minimum = -1161307.464160228000000000
       RightAxis.Title.Caption = 'Height (ft)'
       RightAxis.Title.Color = 8388863
       TopAxis.Automatic = False
@@ -1136,10 +1151,10 @@ object CHART_F: TCHART_F
       end
     end
     object gps_ias: TChart
-      Left = 80
+      Left = 91
       Top = 48
-      Width = 1016
-      Height = 230
+      Width = 937
+      Height = 226
       LeftWall.Picture.Data = {
         07544269746D6170B67F0000424DB67F00000000000036000000280000008000
         0000550000000100180000000000807F0000130B0000130B0000000000000000
@@ -2189,7 +2204,7 @@ object CHART_F: TCHART_F
       Color = clWhite
       TabOrder = 1
       Anchors = [akLeft, akTop, akRight]
-      ExplicitWidth = 997
+      ExplicitWidth = 948
       DefaultCanvas = 'TGDIPlusCanvas'
       PrintMargins = (
         15
@@ -2235,10 +2250,10 @@ object CHART_F: TCHART_F
       end
     end
     object c_pitch: TChart
-      Left = 80
-      Top = 548
-      Width = 967
-      Height = 215
+      Left = 91
+      Top = 538
+      Width = 937
+      Height = 226
       LeftWall.Picture.Data = {
         07544269746D6170B67F0000424DB67F00000000000036000000280000008000
         0000550000000100180000000000807F0000130B0000130B0000000000000000
@@ -3269,15 +3284,30 @@ object CHART_F: TCHART_F
       Title.Text.Strings = (
         'Pitch (degrees)'
         'Roll  (degrees)')
+      BottomAxis.Automatic = False
+      BottomAxis.AutomaticMaximum = False
+      BottomAxis.AutomaticMinimum = False
       BottomAxis.ExactDateTime = False
       BottomAxis.Increment = 0.000694444444444444
       BottomAxis.LabelsAngle = 45
       BottomAxis.LabelsMultiLine = True
       BottomAxis.LabelStyle = talPointValue
+      BottomAxis.Maximum = 60089.485635498800000000
+      BottomAxis.Minimum = -14630.485635498810000000
+      LeftAxis.Automatic = False
+      LeftAxis.AutomaticMaximum = False
+      LeftAxis.AutomaticMinimum = False
       LeftAxis.LabelsAlternate = True
+      LeftAxis.Maximum = 351.729184101759600000
+      LeftAxis.Minimum = -79.229184103622430000
       LeftAxis.TickLength = 10
       LeftAxis.Title.Caption = 'Pitch'
       Panning.MouseWheel = pmwNone
+      RightAxis.Automatic = False
+      RightAxis.AutomaticMaximum = False
+      RightAxis.AutomaticMinimum = False
+      RightAxis.Maximum = 332.519029534593100000
+      RightAxis.Minimum = -77.519029534593200000
       RightAxis.Title.Caption = 'Roll'
       RightAxis.Title.Font.Color = 18913
       RightAxis.Title.Color = clRed
@@ -3334,10 +3364,10 @@ object CHART_F: TCHART_F
       end
     end
     object c_g: TChart
-      Left = 80
+      Left = 91
       Top = 784
-      Width = 967
-      Height = 250
+      Width = 937
+      Height = 226
       Legend.Visible = False
       Title.Text.Strings = (
         'G Accelleration')
@@ -3345,6 +3375,7 @@ object CHART_F: TCHART_F
       Panning.MouseWheel = pmwNone
       View3D = False
       Zoom.MouseWheel = pmwNormal
+      Color = clWhite
       TabOrder = 3
       Anchors = [akLeft, akTop, akRight]
       ExplicitWidth = 948
@@ -3363,8 +3394,8 @@ object CHART_F: TCHART_F
       end
     end
     object alt_marks: TCheckBox
-      Left = 8
-      Top = 321
+      Left = 17
+      Top = 375
       Width = 52
       Height = 17
       Caption = 'Marks'
@@ -3372,9 +3403,9 @@ object CHART_F: TCHART_F
       OnClick = alt_marksClick
     end
     object alt_smoothed: TCheckBox
-      Left = 8
-      Top = 432
-      Width = 66
+      Left = 10
+      Top = 455
+      Width = 75
       Height = 17
       Caption = 'Smoothed'
       TabOrder = 5
@@ -3382,8 +3413,8 @@ object CHART_F: TCHART_F
       OnClick = alt_smoothedClick
     end
     object Button1: TButton
-      Left = 22
-      Top = 769
+      Left = 10
+      Top = 873
       Width = 75
       Height = 25
       Caption = 'Button1'
@@ -3392,8 +3423,8 @@ object CHART_F: TCHART_F
       OnClick = Button1Click
     end
     object elev_marks: TCheckBox
-      Left = 8
-      Top = 344
+      Left = 17
+      Top = 398
       Width = 52
       Height = 17
       Caption = 'Marks'
@@ -3401,8 +3432,8 @@ object CHART_F: TCHART_F
       OnClick = elev_marksClick
     end
     object ias_marks: TCheckBox
-      Left = 8
-      Top = 65
+      Left = 17
+      Top = 129
       Width = 52
       Height = 17
       Caption = 'Marks'
@@ -3410,8 +3441,8 @@ object CHART_F: TCHART_F
       OnClick = ias_marksClick
     end
     object ias_smothed: TCheckBox
-      Left = 8
-      Top = 88
+      Left = 3
+      Top = 248
       Width = 66
       Height = 17
       Caption = 'Smoothed'
@@ -3420,8 +3451,8 @@ object CHART_F: TCHART_F
       OnClick = ias_smothedClick
     end
     object pitch_marks: TCheckBox
-      Left = 8
-      Top = 592
+      Left = 17
+      Top = 643
       Width = 52
       Height = 17
       Caption = 'Marks'
@@ -3429,9 +3460,10 @@ object CHART_F: TCHART_F
       OnClick = pitch_marksClick
     end
     object Panel1: TPanel
-      Left = 0
-      Top = 0
-      Width = 1120
+      AlignWithMargins = True
+      Left = 3
+      Top = 3
+      Width = 1113
       Height = 27
       Align = alTop
       Caption = 'Panel1'
@@ -3444,6 +3476,8 @@ object CHART_F: TCHART_F
       ParentBackground = False
       ParentFont = False
       TabOrder = 11
+      ExplicitLeft = 0
+      ExplicitTop = 0
       ExplicitWidth = 1101
     end
   end

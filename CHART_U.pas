@@ -59,7 +59,7 @@ uses login_u, Main, FLIGHT_SELECT_U;
 
 procedure TCHART_F.alt_marksClick(Sender: TObject);
 begin
-if alt_marks.Checked = true then
+  if alt_marks.Checked = true then
     gps_alt.Series[0].Marks.Visible := true
   else
     gps_alt.Series[0].Marks.Visible := false;
@@ -79,34 +79,37 @@ var
   i: integer;
 
 begin
-  gps_ias.Axes.Bottom.DateTimeFormat:='hh:nn:ss';
-  gps_alt.Axes.Bottom.DateTimeFormat:='hh:nn:ss';
-  c_pitch.Axes.Bottom.DateTimeFormat:='hh:nn:ss';
-  c_g.Axes.Bottom.DateTimeFormat:='hh:nn:ss';
+  gps_ias.Axes.Bottom.DateTimeFormat := 'hh:nn:ss';
+  gps_alt.Axes.Bottom.DateTimeFormat := 'hh:nn:ss';
+  c_pitch.Axes.Bottom.DateTimeFormat := 'hh:nn:ss';
+  c_g.Axes.Bottom.DateTimeFormat := 'hh:nn:ss';
 
   gps_ias.Series[0].Clear;
   gps_ias.Series[1].Clear;
-
 
   for i := 1 to Main.Count_gps_ias do
   begin
     if Xgps_ias[i] > 0 then
     begin
-      gps_ias.Series[0].AddXY(Main.Xgps_ias[i], Main.Ygps_ias[i], '', clTeeColor);
-      gps_ias.Series[1].AddXY(Main.Xgps_ias[i], Main.Ygps_VSI[i], '', clTeeColor);
+      gps_ias.Series[0].AddXY(Main.Xgps_ias[i], Main.Ygps_ias[i], '',
+        clTeeColor);
+      gps_ias.Series[1].AddXY(Main.Xgps_ias[i], Main.Ygps_VSI[i], '',
+        clTeeColor);
     end;
   end;
   gps_ias.Series[0].Repaint;
   gps_ias.Series[1].Repaint;
 
-
   gps_alt.Series[0].Clear;
   gps_alt.Series[1].Clear;
   for i := 1 to Main.Count_gps_ALT do
   begin
-    if Main.Xgps_ALT[i]>0 then begin
-      gps_alt.Series[0].AddXY(Main.Xgps_ALT[i], Main.Ygps_ALT[i], '', clTeeColor);
-      gps_alt.Series[1].AddXY(Main.Xgps_ALT[i], Main.Ygps_HGT[i], '', clTeeColor);
+    if Main.Xgps_ALT[i] > 0 then
+    begin
+      gps_alt.Series[0].AddXY(Main.Xgps_ALT[i], Main.Ygps_ALT[i], '',
+        clTeeColor);
+      gps_alt.Series[1].AddXY(Main.Xgps_ALT[i], Main.Ygps_HGT[i], '',
+        clTeeColor);
 
     end;
   end;
@@ -120,8 +123,10 @@ begin
 
     if Xc_pitch[i] > 0 then
     begin
-      c_pitch.Series[0].AddXY(Main.Xc_pitch[i], Main.Yc_pitch[i], '',clTeeColor);
-      c_pitch.Series[1].AddXY(Main.Xc_pitch[i], Main.Yc_roll[i], '',clTeeColor);
+      c_pitch.Series[0].AddXY(Main.Xc_pitch[i], Main.Yc_pitch[i], '',
+        clTeeColor);
+      c_pitch.Series[1].AddXY(Main.Xc_pitch[i], Main.Yc_roll[i], '',
+        clTeeColor);
 
     end;
   end;
