@@ -116,6 +116,7 @@ type
 
 const
   max_points = 20000;
+  MAX_VSI = 20000;
 
 var
   PRINCIPALE: TPRINCIPALE;
@@ -810,6 +811,9 @@ begin
   end;
 
   vsi_feet := round(vsi_feet);
+
+  if (vsi_feet > MAX_VSI) then
+    exit;
   /// // if vsi_feet>1000 then showmessage(floattostr(vsi_feet));
 
   if REP_OR_CHART = 'CHART' then
