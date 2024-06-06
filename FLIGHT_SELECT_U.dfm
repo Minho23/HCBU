@@ -65,12 +65,12 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
       GradientColorFrom = 15987699
       GradientColorTo = 15987699
       object Label2: TLabel
-        Left = 16
-        Top = 32
+        Left = 17
+        Top = 30
         Width = 233
-        Height = 14
+        Height = 22
         AutoSize = False
-        Caption = 'Low Limit'
+        Caption = 'Low Limit [UTC]'
         Color = clSkyBlue
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -84,10 +84,10 @@ object FLIGHT_SELECT_F: TFLIGHT_SELECT_F
       object Label1: TLabel
         Left = 17
         Top = 96
-        Width = 232
-        Height = 14
+        Width = 233
+        Height = 22
         AutoSize = False
-        Caption = 'High Limit'
+        Caption = 'High Limit [UTC]'
         Color = clSkyBlue
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText

@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="css/flightindicators.css" />
     <script src="js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <title>Six Pack</title>
 </head>
 
 <body>
@@ -92,7 +93,7 @@
             setRollEmbedd(msg);
         };
         function GetVSI(msg) {
-            variometer.setVario(msg); return "VSI=" + msg
+            variometer.setVario(msg); return "VSI= " + msg
         };
 
         function GetSlip(msg) {
@@ -107,6 +108,8 @@
             setTurnEmbedd(msg);
 
         }
+
+        //GetVSI(10)
 
 
 

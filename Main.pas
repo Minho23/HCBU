@@ -116,7 +116,7 @@ type
 
 const
   max_points = 20000;
-  MAX_VSI = 20000;
+  MAX_VSI = 20;
 
 var
   PRINCIPALE: TPRINCIPALE;
@@ -592,7 +592,7 @@ begin
       end
       else
       begin
-        Dlge('Alarm data for ' + marche_param + ' not present.');
+        DlgW('Alarm data for ' + marche_param + ' not present.');
 
       end;
       q_get_alarms.close;
@@ -801,6 +801,7 @@ end;
 procedure vsi(m: string);
 var
   vsi_feet: single;
+  vsi_feet_s: String;
 begin
 
   try
@@ -812,9 +813,9 @@ begin
 
   vsi_feet := round(vsi_feet);
 
-  if (vsi_feet > MAX_VSI) then
+  // VSI ECCEDE IL LIMITE MASSIMO SUPPORTATO DAL GAUGE
+  if ((vsi_feet / 100) > MAX_VSI) then
     exit;
-  /// // if vsi_feet>1000 then showmessage(floattostr(vsi_feet));
 
   if REP_OR_CHART = 'CHART' then
   begin
@@ -822,17 +823,22 @@ begin
     Xgps_VSI[index_gps_VSI] := datetime_x;
 
     Ygps_VSI[index_gps_VSI] := vsi_feet;
-    /// / showmessage(inttostr(index_gps_VSI)+'   -   '+    floattostr(main.Xgps_VSI[index_gps_VSI])+'  -  '+floattostr(main.Ygps_VSI[index_gps_VSI]));
+
     inc(index_gps_VSI);
 
   end
   else
   begin
 
-    check_alarm(inttostr(round(vsi_feet)), 9);
+    vsi_feet_s := inttostr(round(vsi_feet));
+    check_alarm(vsi_feet_s, 9);
     PRINCIPALE.SG.cells[vsi_col, vsi_row] := inttostr(round(vsi_feet));
+
+    // ALLARME VSI
     if vsi_alarm then
       PRINCIPALE.SG.cells[alarm_col, vsi_row] := inttostr(round(vsi_feet));
+
+    // ShowMessage('VSI: ' + Formatfloat('#####0.0', (vsi_feet / 100)));
 
     PRINCIPALE.FScriptGate2.CallScript('GetVsi(' + Formatfloat('#####0.0',
       (vsi_feet / 100)) + ')',
@@ -841,7 +847,6 @@ begin
         gg: string;
       begin
         gg := iResult;
-        /// ////////// principale.memo_send.lines.append(gg);
 
       end);
   end;
@@ -924,9 +929,9 @@ begin
       baro_msg := SplitString(m, ',');
       baro_alt_s := StringReplace(baro_msg[1], '.', ',', [rfReplaceAll]);
       appo_single := strtofloat(baro_alt_s); // * 3.28084;
-      SG.cells[mbar_col, mbar_row] := inttostr(round(appo_single));
+      SG.cells[baro_ft_col, baro_ft_row] := inttostr(round(appo_single));
       baro_hpa_s := baro_msg[0];
-      // SG.cells[1, 7] := baro_hpa_s;
+      SG.cells[mbar_col, mbar_row] := baro_hpa_s;
       baro_alt_s := h_x_baro_s; // altezza in metri preso dal altitude
       baro_hpa_s := StringReplace(baro_hpa_s, '.', ',', [rfReplaceAll]);
       appo_single := strtofloat(baro_hpa_s) + strtofloat(baro_alt_s) / 8.4;
@@ -1076,20 +1081,23 @@ begin
   begin
 
     ia_s := m;
-    check_alarm(ia_s, 1);
+    // ShowMessage('CORRENTE: ' + ia_s);
+    // check_alarm(ia_s, 1);
     // SG.cells[icc_col, icc_row] := ia_s;
-    if icc_alarm then
-      // SG.cells[alarm_col, icc_row] := ia_s + 'mA';
-      FScriptGate3.CallScript('GetIa(' + ia_s + ')',
-        procedure(const iResult: String)
-        var
-          gg: string;
-        begin
-          gg := iResult;
 
-        end);
+    // SG.cells[alarm_col, icc_row] := ia_s + 'mA';
+    FScriptGate3.CallScript('GetIa(' + ia_s + ')',
+      procedure(const iResult: String)
+      var
+        gg: string;
+      begin
+        gg := iResult;
+        // ShowMessage('return from gauge current: ' + gg)
+
+      end);
 
   end;
+
 end;
 
 procedure gps_altitude(m: string);
@@ -1112,7 +1120,8 @@ begin
 
       Ygps_ALT[index_gps_ALT] := alt_gps_i;
       inc(index_gps_ALT);
-      exit; // SE DEVI FARE CHART NON SERVE NIENTE ALTRO
+      exit;
+      // SE DEVI FARE CHART NON SERVE NIENTE ALTRO
     end;
 
     if (elevation < 0) then
@@ -1132,7 +1141,7 @@ begin
 
         // scrivere nella cella se decollato
 
-        SG.cells[take_land_col, take_land_row] := 'TAKEOFF';
+        SG.cells[take_land_col, take_land_row] := 'TAKE-OFF';
         takeoff_past := true;
         landing_past := false;
 
@@ -1453,7 +1462,8 @@ begin
       if GET_Json(slat_s, slon_s) then
       begin
         height_i := round(alt_gps_i - (strtofloat(Parse_JSON(RespJson)) *
-          3.28084)); // Parse_Json return elevation as string
+          3.28084));
+        // Parse_Json return elevation as string
 
         if height_i < 0 then
           height_i := 0;
@@ -1900,9 +1910,10 @@ begin
         else
           application.ProcessMessages;
       end;
-      ShowMessage('REPLAY: fuori dal while eof');
+      // ShowMessage('REPLAY: fuori dal while eof');
       FLIGHT_SELECT_F.q_select.close;
-      DlgI('Flight replay terminated.');
+      if play_or_pause <> 'STOP' then
+        DlgI('Flight replay terminated.');
       pb1.Position := 0;
       bt_cursor.Enabled := false;
       rg_vcr.Visible := false;
@@ -1919,7 +1930,8 @@ end;
 
 procedure TPRINCIPALE.BROADCASTCHANNEL1Click(Sender: TObject);
 begin
-  BROADCAST_F.ShowModal();
+  DlgI('This feature is currently under development.');
+  // BROADCAST_F.ShowModal();
 end;
 
 procedure TPRINCIPALE.bt_chartClick(Sender: TObject);
@@ -2328,11 +2340,11 @@ begin
       ColWidths[3] := 40;
       ColWidths[4] := 100;
       cells[0, vcc_row] := 'Vcc [V] / I [mA]';
-      cells[0, tint_row] := 'Tint[°C]';
+      cells[0, tint_row] := 'Tint [°C]';
       cells[0, hdg_row] := 'Magn. Heading [deg]';
       cells[0, gtot_row] := 'G acc. tot,min,max [G]';
       cells[0, gs_row] := 'GPS GS [Kts]';
-      cells[0, vsi_row] := 'VSI[ft/min]';
+      cells[0, vsi_row] := 'VSI [ft/min]';
       cells[0, mbar_row] := 'Baro Pressure [mBar]';
       cells[0, baro_ft_row] := 'Baro / GPS Altitude [ft]';
       cells[0, utc_date_row] := 'UTC Timestamp';
@@ -2594,7 +2606,8 @@ begin
         SG.Canvas.Font.Color := clBlue;
     end;
     if (ACol = roll_col) and (ARow = roll_row) then
-    begin // ROLL
+    begin
+      // ROLL
       if roll_alarm then
         SG.Canvas.Font.Color := clRed
       else
@@ -2637,7 +2650,7 @@ begin
   else if tb_delay.Position = 6 then
     ddelay := 500;
 
-  ShowMessage('delay: ' + inttostr(ddelay));
+  // ShowMessage('delay: ' + inttostr(ddelay));
 
   // if tb_delay.Position > 5 then
   // ddelay := tb_delay.Position * 20

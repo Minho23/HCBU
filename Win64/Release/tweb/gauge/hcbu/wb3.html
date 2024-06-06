@@ -103,6 +103,7 @@
             width: 180,
             height: 130,
             units: "---- hPa",
+            fontUnitsSize: 25,
             startAngle: 60,
             ticksAngle: 240,
             colorPlate: "#E0E0E0",
@@ -163,6 +164,7 @@
             renderTo: 'canvasHeading',
             width: 180,
             height: 130,
+            fontUnitsSize: 25,
             units: "--- Deg",
             startAngle: 360,
             ticksAngle: 360,
@@ -225,7 +227,8 @@
             renderTo: 'canvasSignal',
             width: 180,
             height: 130,
-            units: "---- dbm",
+            units: "--- dbm",
+            fontUnitsSize: 40,
             title: "Weak           Good",
             colorTitle: '#003366',
             startAngle: 90,
@@ -289,7 +292,8 @@
             borderShadowWidth: 0,
             value: 0,
             animateOnInit: false,
-            animatedValue: false
+            animatedValue: false,
+           
 
         }).draw();
 
@@ -297,7 +301,9 @@
             renderTo: 'canvasVcc',
             width: 180,
             height: 130,
-            units: "---- Vcc",
+            units: "-- Vcc",
+            colorTitle: '#FF0000',
+            fontUnitsSize: 40,
             startAngle: 90,
             ticksAngle: 180,
             colorPlate: "#E0E0E0",
@@ -373,6 +379,7 @@
             width: 180,
             height: 130,
             units: "---- Ia",
+            fontUnitsSize: 40,
             startAngle: 90,
             ticksAngle: 180,
             colorPlate: "#E0E0E0",
@@ -473,10 +480,10 @@
         };
 
         function GetIa(msg) {
-            gauge_ia_x(msg); return "Ia=" + msg
+            gauge_ia_x(msg); return "Ia= " + msg
         };
 
-        //gauge_ia_x(400)
+        //GetIa(400)
         //gauge_heading_x(180)
 
 

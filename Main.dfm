@@ -1223,13 +1223,17 @@ object PRINCIPALE: TPRINCIPALE
   object q_read_aero: TFDQuery
     Connection = cn1
     SQL.Strings = (
-      'SELECT MARCHE'
-      'FROM ANA.ANAAERO'
-      'WHERE EXISTS ('
-      '    SELECT 1'
-      '    FROM ETL.ETL_MQTT_MESSAGE'
-      '    WHERE ETL.ETL_MQTT_MESSAGE.MARCHE = ANA.ANAAERO.MARCHE'
-      ');')
+      '--SELECT MARCHE'
+      '--FROM ANA.ANAAERO'
+      '--WHERE EXISTS ('
+      '    --SELECT 1'
+      '    --FROM ETL.ETL_MQTT_MESSAGE'
+      '    --WHERE ETL.ETL_MQTT_MESSAGE.MARCHE = ANA.ANAAERO.MARCHE'
+      '--);'
+      ''
+      ''
+      'SELECT DISTINCT MARCHE'
+      'FROM ETL.ETL_MQTT_MESSAGE;')
     Left = 160
     Top = 40
   end
