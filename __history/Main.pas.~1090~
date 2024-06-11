@@ -1403,12 +1403,8 @@ begin
     PRINCIPALE.SG.cells[3, gtot_row] := Formatfloat('0.0', g_max);
     application.ProcessMessages;
 
-    // GTOT CHECK
     check_alarm(floattostr(g_tot), 5);
     PRINCIPALE.SG.cells[gtot_col, gtot_row] := Formatfloat('0.0', g_tot);
-
-    if gtot_alarm then
-      PRINCIPALE.SG.cells[alarm_col, gtot_row] := floattostr(g_tot);
 
     application.ProcessMessages;
   end

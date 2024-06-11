@@ -442,7 +442,7 @@ object PRINCIPALE: TPRINCIPALE
       Align = alClient
       DefaultColWidth = 66
       DefaultRowHeight = 29
-      RowCount = 13
+      RowCount = 15
       GradientEndColor = clGray
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing]
       TabOrder = 0

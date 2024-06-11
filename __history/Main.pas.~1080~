@@ -189,11 +189,11 @@ var
 const
   Komma: TFormatSettings = (DecimalSeparator: ',');
   Dot: TFormatSettings = (DecimalSeparator: '.');
-  // COLONNE
+  // COORDINATE COLONNE
   vcc_col = 1;
-  vcc_row = 1;
+  vcc_row = 13;
   icc_col = 2;
-  icc_row = 1;
+  icc_row = 13;
   tint_col = 1;
   tint_row = 10;
   test_col = 2;
@@ -812,10 +812,10 @@ begin
   end;
 
   vsi_feet := round(vsi_feet);
+
+  // VSI ECCEDE IL LIMITE MASSIMO SUPPORTATO DAL GAUGE
   if ((vsi_feet / 100) > MAX_VSI) then
     exit;
-
-  /// // if vsi_feet>1000 then showmessage(floattostr(vsi_feet));
 
   if REP_OR_CHART = 'CHART' then
   begin
@@ -823,7 +823,7 @@ begin
     Xgps_VSI[index_gps_VSI] := datetime_x;
 
     Ygps_VSI[index_gps_VSI] := vsi_feet;
-    /// / showmessage(inttostr(index_gps_VSI)+'   -   '+    floattostr(main.Xgps_VSI[index_gps_VSI])+'  -  '+floattostr(main.Ygps_VSI[index_gps_VSI]));
+
     inc(index_gps_VSI);
 
   end
@@ -833,6 +833,8 @@ begin
     vsi_feet_s := inttostr(round(vsi_feet));
     check_alarm(vsi_feet_s, 9);
     PRINCIPALE.SG.cells[vsi_col, vsi_row] := inttostr(round(vsi_feet));
+
+    // ALLARME VSI
     if vsi_alarm then
       PRINCIPALE.SG.cells[alarm_col, vsi_row] := inttostr(round(vsi_feet));
 
@@ -1054,10 +1056,10 @@ begin
     vcc_s := m;
 
     check_alarm(vcc_s, 0);
-    // SG.cells[vcc_col, vcc_row] := vcc_s;
+    SG.cells[vcc_col, vcc_row] := vcc_s;
     if vcc_alarm then
-      // SG.cells[alarm_col, vcc_row] := vcc_s + 'V';
-      application.ProcessMessages;
+      SG.cells[alarm_col, vcc_row] := vcc_s;
+    application.ProcessMessages;
     FScriptGate3.CallScript('GetVcc(' + vcc_s + ')',
       procedure(const iResult: String)
       var
@@ -1079,18 +1081,20 @@ begin
   begin
 
     ia_s := m;
-    ShowMessage('CORRENTE: ' + ia_s);
-    // check_alarm(ia_s, 1);
-    // SG.cells[icc_col, icc_row] := ia_s;
+    // ShowMessage('CORRENTE: ' + ia_s);
+    check_alarm(ia_s, 1);
+    SG.cells[icc_col, icc_row] := ia_s;
 
-    // SG.cells[alarm_col, icc_row] := ia_s + 'mA';
+    if icc_alarm then
+      SG.cells[alarm_col, icc_row] := ia_s;
+
     FScriptGate3.CallScript('GetIa(' + ia_s + ')',
       procedure(const iResult: String)
       var
         gg: string;
       begin
         gg := iResult;
-        ShowMessage('return from gauge current: ' + gg)
+        // ShowMessage('return from gauge current: ' + gg)
 
       end);
 
@@ -1139,7 +1143,7 @@ begin
 
         // scrivere nella cella se decollato
 
-        SG.cells[take_land_col, take_land_row] := 'TAKEOFF';
+        SG.cells[take_land_col, take_land_row] := 'TAKE-OFF';
         takeoff_past := true;
         landing_past := false;
 
@@ -1928,7 +1932,8 @@ end;
 
 procedure TPRINCIPALE.BROADCASTCHANNEL1Click(Sender: TObject);
 begin
-  BROADCAST_F.ShowModal();
+  DlgI('This feature is currently under development.');
+  // BROADCAST_F.ShowModal();
 end;
 
 procedure TPRINCIPALE.bt_chartClick(Sender: TObject);
@@ -2336,23 +2341,22 @@ begin
       ColWidths[2] := 60;
       ColWidths[3] := 40;
       ColWidths[4] := 100;
-      cells[0, vcc_row] := 'Vcc [V] / I [mA]';
-      cells[0, tint_row] := 'Tint[°C]';
+
+      cells[0, tint_row] := 'Tint [°C]';
       cells[0, hdg_row] := 'Magn. Heading [deg]';
       cells[0, gtot_row] := 'G acc. tot,min,max [G]';
+      // cells[0, gacc_row] := 'G acc. x,y,z (G)';
       cells[0, gs_row] := 'GPS GS [Kts]';
-      cells[0, vsi_row] := 'VSI[ft/min]';
+      cells[0, vsi_row] := 'VSI [ft/min]';
       cells[0, mbar_row] := 'Baro Pressure [mBar]';
       cells[0, baro_ft_row] := 'Baro / GPS Altitude [ft]';
       cells[0, utc_date_row] := 'UTC Timestamp';
-      // cells[0, dbm_row] := 'GPRS Signal (dbm)';
       cells[0, pitch_row] := 'Pitch / Roll [Deg]';
-      // cells[0, gacc_row] := 'G acc. x,y,z (G)';
       cells[0, height_row] := 'Height [ft]';
-      // cells[0, connected_row] := 'Connected';
-      // cells[0, turnrate_row] := 'TurnRate (deg/sec) ';
       cells[0, co_row] := 'Carbon Monoxide [ppm]';
       cells[0, take_land_row] := 'Take-off/Landing';
+      cells[0, vcc_row] := 'Vcc [V] / I [mA]';
+      // cells[0, turnrate_row] := 'TurnRate (deg/sec) ';
 
       // header
       cells[alarm_col, 0] := 'Last Alarm';
