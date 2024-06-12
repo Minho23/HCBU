@@ -179,7 +179,6 @@ var
     IAS_MAX, VSI_MAX, PITCH_MAX, ROLL_MAX, HEIGHT_MIN, ALTITUDE_MAX: double;
 
   alarm_table_present: bool;
-  red_color: bool;
   vcc_alarm, icc_alarm, tint_alarm, gtot_alarm, ias_alarm, vsi_alarm,
     pitch_alarm, roll_alarm, height_alarm, altitude_alarm: bool;
   RespJson: string;
@@ -441,7 +440,7 @@ begin
 
 end;
 
-function check_if_is_alarm(dato: double; typeof_data: Integer): Boolean;
+procedure check_if_is_alarm(dato: double; typeof_data: Integer);
 
 begin
   // DATI GLI ALLARMI SALVATI IN MEMORIA VERIFICA CHE IL DATO SIA NEL RANGE D'ALLARME O NO
@@ -450,8 +449,6 @@ begin
 
   with PRINCIPALE do
   begin
-
-    Result := false;
 
     case typeof_data of
 
@@ -652,19 +649,9 @@ begin
     begin
       value_f := abs(value_f);
     end;
-    try
 
-      if check_if_is_alarm(value_f, alarm_index) then
-      begin
-        red_color := true;
-      end
-      else
-        red_color := false;
+    check_if_is_alarm(value_f, alarm_index);
 
-    except
-      on e: exception do
-        // showmessage('check alarm error');
-    end;
   end;
 end;
 
@@ -1048,7 +1035,7 @@ begin
     check_alarm(vcc_s, 0);
     SG.cells[vcc_col, vcc_row] := vcc_s;
     if vcc_alarm then
-      SG.cells[alarm_col, vcc_row] := vcc_s;
+      SG.cells[alarm_col, vcc_row] := vcc_s + ' Volt';
     application.ProcessMessages;
     FScriptGate3.CallScript('GetVcc(' + vcc_s + ')',
       procedure(const iResult: String)
@@ -1076,7 +1063,7 @@ begin
     SG.cells[icc_col, icc_row] := ia_s;
 
     if icc_alarm then
-      SG.cells[alarm_col, icc_row] := ia_s;
+      SG.cells[alarm_col, icc_row] := ia_s + ' mah';
 
     FScriptGate3.CallScript('GetIa(' + ia_s + ')',
       procedure(const iResult: String)
@@ -1156,22 +1143,31 @@ begin
       end;
     end;
 
+    // ALTITUDE CHECK
     ft_amsl_s := inttostr(round(appo_single));
 
     check_alarm(ft_amsl_s, 6);
     SG.cells[gps_ft_col, gps_ft_row] := ft_amsl_s;
 
+    if altitude_alarm then
+      PRINCIPALE.SG.cells[alarm_col, gps_ft_row] := ft_amsl_s;
+
+    // HEIGHT CHECK
+
     check_alarm(inttostr(height_i), 8);
     SG.cells[height_col, height_row] := inttostr(height_i);
 
-    /// //////// ALTIMETRO
+    if height_alarm then
+      PRINCIPALE.SG.cells[alarm_col, height_row] := inttostr(height_i);
+
+    // ALTIMETRO
     FScriptGate2.CallScript('dammi_quota(' + ft_amsl_s + ')',
       procedure(const iResult: String)
       var
         gg: string;
       begin
         gg := iResult;
-        /// /principale.memo_send.Lines.Append(gg);
+
       end);
 
   end;
@@ -1266,7 +1262,7 @@ begin
     check_alarm(pitch_s, 3);
     PRINCIPALE.SG.cells[pitch_col, pitch_row] := pitch_s;
     if pitch_alarm then
-      PRINCIPALE.SG.cells[alarm_col, pitch_row] := pitch_s;
+      PRINCIPALE.SG.cells[alarm_col, pitch_row] := pitch_s + ' Pitch';
   end;
 
   if REP_OR_CHART = 'CHART' then
@@ -1310,7 +1306,7 @@ begin
     check_alarm(roll_s, 4);
     PRINCIPALE.SG.cells[roll_col, roll_row] := roll_s;
     if roll_alarm then
-      PRINCIPALE.SG.cells[alarm_col, roll_row] := roll_s;
+      PRINCIPALE.SG.cells[alarm_col, roll_row] := roll_s + ' Roll';
   end;
 
   if REP_OR_CHART = 'CHART' then
@@ -1351,7 +1347,6 @@ begin
     acc_z := strtofloat(acc_z_s);
     g_tot := sqrt(sqr(acc_x) + sqr(acc_y) + sqr(acc_z));
 
-    check_alarm(floattostr(g_tot), 5);
   except
     on e: exception do
     begin
@@ -1408,8 +1403,12 @@ begin
     PRINCIPALE.SG.cells[3, gtot_row] := Formatfloat('0.0', g_max);
     application.ProcessMessages;
 
+    // GTOT CHECK
     check_alarm(floattostr(g_tot), 5);
     PRINCIPALE.SG.cells[gtot_col, gtot_row] := Formatfloat('0.0', g_tot);
+
+    if gtot_alarm then
+      PRINCIPALE.SG.cells[alarm_col, gtot_row] := floattostr(g_tot);
 
     application.ProcessMessages;
   end
@@ -1544,7 +1543,7 @@ begin
 
     if pos('/', ATopic) > 0 then
     begin
-      red_color := false;
+
       // subtopic := copy(ATopic, pos('/', ATopic), 2);
 
       subtopic := copy(ATopic, pos('/', ATopic));
@@ -1797,23 +1796,10 @@ var
   ss1, ss2: string;
 
 begin
-  // serve per i test
-  { etopic.Text := 'I-RACC';
-    WITH FLIGHT_SELECT_F do
-    begin
-    rg_flight_type.ItemIndex := 1;
-    edata1.Date := strtodate('20/07/2023');
-    edata2.Date := strtodate('20/07/2023');
-    etime1.Time := strtotime('16:20:00');
-    etime2.Time := strtotime('16:31:00');
-
-    end;
-  }
 
   RESET_ALARM;
   REP_OR_CHART := 'REPLAY';
   FLIGHT_SELECT_F.bt_replay_or_chart.Caption := '&Replay';
-  // SG.cells[0, 14] := 'Connection';
   datetime_gps := now;
 
   if etopic.Text <> '' then
@@ -1876,18 +1862,17 @@ begin
             if (FLIGHT_SELECT_F.q_select['MQTT_CHANNEL'] = 'N') then
               ss2 := FLIGHT_SELECT_F.q_select['MQTT_SUBTOPIC'];
             ss2 := ss2 + (FLIGHT_SELECT_F.q_select['payload_alfa']);
-            // showmessage(ss1 + ' ' + ss2);
             Decode(ss1, ss2);
           end;
           if FLIGHT_SELECT_F.q_select['FLAG_Z'] = '1' then
           begin
-            // SG.cells[1, 14] := 'YES';
+
             box_connected := true;
 
           end
           else
           begin
-            // SG.cells[1, 14] := 'NO';
+
             box_connected := false;
             signal_strength('0');
 
@@ -1902,7 +1887,7 @@ begin
           Sleep(ddelay);
           FLIGHT_SELECT_F.q_select.Next;
           application.ProcessMessages;
-          // ShowMessage('END CICLO');
+
         end
         else if play_or_pause = 'STOP' then
         begin
@@ -1913,7 +1898,7 @@ begin
         else
           application.ProcessMessages;
       end;
-      // ShowMessage('REPLAY: fuori dal while eof');
+
       FLIGHT_SELECT_F.q_select.close;
       if play_or_pause <> 'STOP' then
         DlgI('Flight replay terminated.');
@@ -1942,7 +1927,7 @@ procedure TPRINCIPALE.bt_chartClick(Sender: TObject);
 begin
   REP_OR_CHART := 'CHART';
   FLIGHT_SELECT_F.bt_replay_or_chart.Caption := 'C&hart';
-  // SG.cells[0, 14] := '';
+
   datetime_gps := now;
   if etopic.Text <> '' then
   begin
@@ -2337,14 +2322,14 @@ begin
     /// CANALE W
     with SG do
     begin
-      ColWidths[0] := 120;
+      ColWidths[0] := 125;
       ColWidths[1] := 60;
-      ColWidths[2] := 60;
-      ColWidths[3] := 40;
+      ColWidths[2] := 50;
+      ColWidths[3] := 50;
       ColWidths[4] := 100;
 
       cells[0, utc_date_row] := 'UTC Timestamp';
-      cells[0, pitch_row] := 'Pitch / Roll / Turn rate [Deg]';
+      cells[0, pitch_row] := 'Pitch/Roll/Turn rate[Deg]';
       cells[0, gtot_row] := 'G acc. tot,min,max [G]';
       cells[0, gacc_row] := 'G acc. x,y,z [G]';
       cells[0, gs_row] := 'GPS GS [Kts]';
@@ -2353,7 +2338,7 @@ begin
       cells[0, vsi_row] := 'VSI [ft/min]';
       cells[0, hdg_row] := 'Magn. Heading [deg]';
       cells[0, mbar_row] := 'Baro Pressure [mBar]';
-      cells[0, tint_row] := 'Tint [°C]';
+      cells[0, tint_row] := 'Temperature [°C]';
       cells[0, co_row] := 'Carbon Monoxide [ppm]';
       cells[0, vcc_row] := 'Vcc [V] / I [mA]';
       cells[0, take_land_row] := 'Take-off/Landing';
@@ -2555,20 +2540,20 @@ begin
       SG.Canvas.Font.Color := clRed // solo per la colonna allarmi
     else
       SG.Canvas.Font.Color := clBlack;
-    // if (ACol = vcc_col) and (ARow = vcc_row) then
-    // begin // Vcc
-    // if vcc_alarm then
-    // SG.Canvas.Font.Color := clRed
-    // else
-    // SG.Canvas.Font.Color := clBlue;
-    // end;
-    // if (ACol = icc_col) and (ARow = icc_row) then
-    // begin // Icc
-    // if icc_alarm then
-    // SG.Canvas.Font.Color := clRed
-    // else
-    // SG.Canvas.Font.Color := clBlue;
-    // end;
+    if (ACol = vcc_col) and (ARow = vcc_row) then
+    begin // Vcc
+      if vcc_alarm then
+        SG.Canvas.Font.Color := clRed
+      else
+        SG.Canvas.Font.Color := clBlue;
+    end;
+    if (ACol = icc_col) and (ARow = icc_row) then
+    begin // Icc
+      if icc_alarm then
+        SG.Canvas.Font.Color := clRed
+      else
+        SG.Canvas.Font.Color := clBlue;
+    end;
     if (ACol = gtot_col) and (ARow = gtot_row) then
     begin // Gtot
       if gtot_alarm then

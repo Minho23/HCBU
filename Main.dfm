@@ -3,8 +3,8 @@ object PRINCIPALE: TPRINCIPALE
   Left = 0
   Top = 0
   Caption = 'HyperConnected Base Unit - INTUOS Srl Italy'
-  ClientHeight = 721
-  ClientWidth = 1165
+  ClientHeight = 775
+  ClientWidth = 1221
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,12 +18,12 @@ object PRINCIPALE: TPRINCIPALE
   OnKeyUp = FormKeyUp
   OnShow = FormShow
   DesignSize = (
-    1165
-    721)
+    1221
+    775)
   TextHeight = 13
   object rGroupBox1: TrGroupBox
     Left = 24
-    Top = 219
+    Top = 273
     Width = 267
     Height = 195
     Anchors = [akLeft, akBottom]
@@ -39,7 +39,7 @@ object PRINCIPALE: TPRINCIPALE
     CaptionParentFont = False
     GradientColorFrom = 15987699
     GradientColorTo = 15987699
-    ExplicitTop = 215
+    ExplicitTop = 269
     object Label1: TLabel
       Left = 16
       Top = 22
@@ -224,7 +224,7 @@ object PRINCIPALE: TPRINCIPALE
   object memo_send: TMemo
     AlignWithMargins = True
     Left = 24
-    Top = 586
+    Top = 640
     Width = 267
     Height = 42
     Anchors = [akLeft, akBottom]
@@ -237,12 +237,12 @@ object PRINCIPALE: TPRINCIPALE
     ScrollBars = ssVertical
     TabOrder = 1
     OnKeyDown = memo_sendKeyDown
-    ExplicitTop = 582
+    ExplicitTop = 636
   end
   object bt_send: TBitBtn
     AlignWithMargins = True
     Left = 24
-    Top = 647
+    Top = 701
     Width = 267
     Height = 33
     Anchors = [akLeft, akBottom]
@@ -273,24 +273,24 @@ object PRINCIPALE: TPRINCIPALE
     ParentFont = False
     TabOrder = 2
     OnClick = bt_sendClick
-    ExplicitTop = 643
+    ExplicitTop = 697
   end
   object cb_server: TCheckBox
     Left = 450
-    Top = 221
+    Top = 275
     Width = 65
     Height = 17
     Anchors = [akLeft, akBottom]
     Caption = '&Debug'
     TabOrder = 3
     Visible = False
-    ExplicitTop = 217
+    ExplicitTop = 271
   end
   object sb1: TStatusBar
     AlignWithMargins = True
     Left = 3
-    Top = 699
-    Width = 1159
+    Top = 753
+    Width = 1215
     Height = 19
     Panels = <
       item
@@ -306,13 +306,13 @@ object PRINCIPALE: TPRINCIPALE
         Width = 200
       end>
     OnDrawPanel = sb1DrawPanel
-    ExplicitTop = 695
-    ExplicitWidth = 1157
+    ExplicitTop = 749
+    ExplicitWidth = 1213
   end
   object r: TrMemoEx
     AlignWithMargins = True
     Left = 24
-    Top = 420
+    Top = 474
     Width = 267
     Height = 160
     Anchors = [akLeft, akBottom]
@@ -326,13 +326,13 @@ object PRINCIPALE: TPRINCIPALE
     ReadOnly = True
     ScrollBars = ssBoth
     TabOrder = 5
-    ExplicitTop = 416
+    ExplicitTop = 470
   end
   object rGroupBox2: TrGroupBox
     Left = 24
     Top = 8
     Width = 629
-    Height = 205
+    Height = 259
     Anchors = [akLeft, akTop, akBottom]
     Caption = 'Virtual Cockpit'
     TabOrder = 6
@@ -340,18 +340,18 @@ object PRINCIPALE: TPRINCIPALE
     CaptionFontColor = 4194432
     GradientColorFrom = 15987699
     GradientColorTo = 15987699
-    ExplicitHeight = 201
+    ExplicitHeight = 255
     object wb2: TWebBrowser
       AlignWithMargins = True
       Left = 5
       Top = 20
       Width = 619
-      Height = 180
+      Height = 234
       Align = alClient
       TabOrder = 0
-      ExplicitHeight = 176
+      ExplicitHeight = 230
       ControlData = {
-        4C000000FA3F00009B1200000000000000000000000000000000000000000000
+        4C000000FA3F00002F1800000000000000000000000000000000000000000000
         000000004C000000000000000000000001000000E0D057007335CF11AE690800
         2B2E126208000000000000004C0000000114020000000000C000000000000046
         8000000000000000000000000000000000000000000000000000000000000000
@@ -361,7 +361,7 @@ object PRINCIPALE: TPRINCIPALE
   object rGroupBox3: TrGroupBox
     Left = 671
     Top = 8
-    Width = 472
+    Width = 528
     Height = 250
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Control Panel'
@@ -370,18 +370,18 @@ object PRINCIPALE: TPRINCIPALE
     CaptionFontColor = 8454143
     GradientColorFrom = 15987699
     GradientColorTo = 15987699
-    ExplicitWidth = 470
+    ExplicitWidth = 526
     object wb3: TWebBrowser
       AlignWithMargins = True
       Left = 5
       Top = 20
-      Width = 462
+      Width = 518
       Height = 225
       Align = alClient
       TabOrder = 0
-      ExplicitWidth = 460
+      ExplicitWidth = 516
       ControlData = {
-        4C000000C02F0000411700000000000000000000000000000000000000000000
+        4C00000089350000411700000000000000000000000000000000000000000000
         000000004C000000000000000000000001000000E0D057007335CF11AE690800
         2B2E126208000000000000004C0000000114020000000000C000000000000046
         8000000000000000000000000000000000000000000000000000000000000000
@@ -391,8 +391,8 @@ object PRINCIPALE: TPRINCIPALE
   object s: TrGroupBox
     Left = 671
     Top = 264
-    Width = 472
-    Height = 432
+    Width = 528
+    Height = 486
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = 'GPS Map'
     TabOrder = 8
@@ -401,20 +401,20 @@ object PRINCIPALE: TPRINCIPALE
     GradientColorFrom = 15987699
     GradientColorTo = 15987699
     AutoResizeChild.AutoResizeActive = True
-    ExplicitWidth = 470
-    ExplicitHeight = 428
+    ExplicitWidth = 526
+    ExplicitHeight = 482
     object wb1: TWebBrowser
       AlignWithMargins = True
       Left = 5
       Top = 20
-      Width = 462
-      Height = 407
+      Width = 518
+      Height = 461
       Align = alClient
       TabOrder = 0
-      ExplicitWidth = 460
-      ExplicitHeight = 403
+      ExplicitWidth = 516
+      ExplicitHeight = 457
       ControlData = {
-        4C000000C02F0000112A00000000000000000000000000000000000000000000
+        4C00000089350000A52F00000000000000000000000000000000000000000000
         000000004C000000000000000000000001000000E0D057007335CF11AE690800
         2B2E126208000000000000004C0000000114020000000000C000000000000046
         8000000000000000000000000000000000000000000000000000000000000000
@@ -423,7 +423,7 @@ object PRINCIPALE: TPRINCIPALE
   end
   object rGroupBox5: TrGroupBox
     Left = 297
-    Top = 223
+    Top = 277
     Width = 356
     Height = 473
     Anchors = [akLeft, akBottom]
@@ -432,7 +432,7 @@ object PRINCIPALE: TPRINCIPALE
     CaptionColor = 16744448
     GradientColorFrom = 15987699
     GradientColorTo = 15987699
-    ExplicitTop = 219
+    ExplicitTop = 273
     object sg: TStringGrid
       AlignWithMargins = True
       Left = 5
@@ -1160,8 +1160,8 @@ object PRINCIPALE: TPRINCIPALE
     Version = '2.0.5.3'
     OnConnectedStatusChanged = mqcConnectedStatusChanged
     OnPublishReceivedEx = mqcPublishReceivedEx
-    Left = 88
-    Top = 432
+    Left = 64
+    Top = 488
   end
   object MainMenu1: TMainMenu
     Left = 762
@@ -1250,8 +1250,8 @@ object PRINCIPALE: TPRINCIPALE
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 128
-    Top = 432
+    Left = 112
+    Top = 488
   end
   object fod1: TFileOpenDialog
     FavoriteLinks = <>

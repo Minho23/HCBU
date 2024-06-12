@@ -373,6 +373,7 @@ begin
   Result := StringReplace(elev_s, '.', ',', [rfReplaceAll]);
 end;
 
+// FUNZIONE PER DISCRIMINARE L'ATTERRAGGIO
 function is_landing(ele: Integer): Boolean;
 
 var
@@ -381,37 +382,42 @@ var
 begin
   Result := false;
 
+  // ELEVATION SUPERIORE A SOGLIA
   if (ele < theshold_ele_land) then
   begin
 
-    // ShowMessage('ELEVATION TROPPO BASSA');
     if (first_ele_minor = 0) then
     begin
-      // ShowMessage('PRIMO ELE BASSO');
+
+      // PRIMA ITERAZIONE -> START CONTATORE TIME
       first_ele_minor := 1;
       old_sec_land := DateTimeToUnix(now());
 
       exit;
 
     end;
+
     now_sec_land := DateTimeToUnix(now());
 
+    // INCREMENTO CONTATORE CON IL TEMPO TRASCORSO DALL'ULTIMA ITERAZIONE DI ELEVATION
     cont_for_land := cont_for_land + (now_sec_land - old_sec_land);
 
-    // ShowMessage('cont for land: ' + inttostr(cont_for_land));
+    // CONTATORE SUPERIORE A SOGLIA
     if (cont_for_land > theshold_sec_land) then
     begin
 
-      // ShowMessage('done landing');
-
+      // ATTERRAGGIO
       done_landing := true;
 
+      // RITORNO CONDIZIONI INIZIALI
       cont_for_land := 0;
       first_ele_minor := 0;
     end
     else
     begin
       done_landing := false;
+
+      // AGGIORNO VARIABILE DI APPOGGIO
       old_sec_land := now_sec_land;
 
     end;
@@ -423,15 +429,15 @@ begin
 
 end;
 
+// FUNZIONE PER DISCRIMINARE DECOLLO
 function is_takeoff(ele, speed: Integer): Boolean;
 begin
 
-  // ShowMessage('ele take off: ' + inttostr(ele));
-
+  // ELEVATION E VELOCITà SUPERIORE A SOGLIA
   if (ele > theshold_ele_to) and (speed > theshold_speed_to) then
   begin
+    // DECOLLO
     done_takeoff := true;
-
   end
   else
     done_takeoff := false;
@@ -1058,7 +1064,6 @@ begin
   begin
 
     ia_s := m;
-    // ShowMessage('CORRENTE: ' + ia_s);
     check_alarm(ia_s, 1);
     SG.cells[icc_col, icc_row] := ia_s;
 
@@ -1071,7 +1076,6 @@ begin
         gg: string;
       begin
         gg := iResult;
-        // ShowMessage('return from gauge current: ' + gg)
 
       end);
 
@@ -1088,7 +1092,6 @@ begin
   begin
     m := StringReplace(m, '.', ',', [rfReplaceAll]);
     h_x_baro_s := m;
-    /// appo_single:= strtofloat(m)*3.28084;
     appo_single := strtofloat(m);
     alt_gps_i := round(appo_single);
 
@@ -1111,15 +1114,15 @@ begin
     if (height_i < 0) then
       height_i := 0;
 
-    // SE NON è GIà AVVENUTO IL TAKEOFF
+    // SE NON è GIà AVVENUTO IL DECOLLO
     if not takeoff_past then
     begin
 
+      // VERIFICO IL DECOLLO
       if (is_takeoff(height_i, ias_kts_int)) then
       begin
 
-        // scrivere nella cella se decollato
-
+        // SCRITTURA NELLA TABELLA E RITORNO ALLE CONDIZIONI INIZIALI
         SG.cells[take_land_col, take_land_row] := 'TAKE-OFF';
         takeoff_past := true;
         landing_past := false;
@@ -1133,9 +1136,11 @@ begin
       if Not landing_past then
       begin
 
+        // VERIFICO ATTERRAGGIO
         if (is_landing(height_i)) then
         begin
 
+          // SCRITTURA NELLA TABELLA E RITORNO ALLE CONDIZIONI INIZIALI
           SG.cells[take_land_col, take_land_row] := 'LANDING';
           landing_past := true;
           takeoff_past := false;
@@ -2322,14 +2327,14 @@ begin
     /// CANALE W
     with SG do
     begin
-      ColWidths[0] := 120;
+      ColWidths[0] := 125;
       ColWidths[1] := 60;
-      ColWidths[2] := 60;
-      ColWidths[3] := 40;
+      ColWidths[2] := 50;
+      ColWidths[3] := 50;
       ColWidths[4] := 100;
 
       cells[0, utc_date_row] := 'UTC Timestamp';
-      cells[0, pitch_row] := 'Pitch / Roll / Turn rate [Deg]';
+      cells[0, pitch_row] := 'Pitch/Roll/Turn rate[Deg]';
       cells[0, gtot_row] := 'G acc. tot,min,max [G]';
       cells[0, gacc_row] := 'G acc. x,y,z [G]';
       cells[0, gs_row] := 'GPS GS [Kts]';
@@ -2338,7 +2343,7 @@ begin
       cells[0, vsi_row] := 'VSI [ft/min]';
       cells[0, hdg_row] := 'Magn. Heading [deg]';
       cells[0, mbar_row] := 'Baro Pressure [mBar]';
-      cells[0, tint_row] := 'Tint [°C]';
+      cells[0, tint_row] := 'Temperature [°C]';
       cells[0, co_row] := 'Carbon Monoxide [ppm]';
       cells[0, vcc_row] := 'Vcc [V] / I [mA]';
       cells[0, take_land_row] := 'Take-off/Landing';
@@ -2524,7 +2529,7 @@ var
   s: string;
   RectForText: TRect;
 begin
-  if ACol = 0 then
+  if (ACol = 0) and (ARow = 0) then
     exit;
 
   if SG.cells[ACol, ARow] = '' then
